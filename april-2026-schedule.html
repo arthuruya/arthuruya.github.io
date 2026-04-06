@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>April 2026 — A Gentle Map</title>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FAFAF8;
+    --green-deep: #1a3a2a;
+    --green-mid: #2d5a3d;
+    --green-light: #4a7c59;
+    --green-bg: #f0f7f0;
+    --green-border: #c8e0c8;
+    --gold: #F59E0B;
+    --gold-bg: #FFF7ED;
+    --gold-badge: #FEF3C7;
+    --gold-text: #92400E;
+    --blue: #3B82F6;
+    --blue-bg: #EFF6FF;
+    --blue-badge: #DBEAFE;
+    --blue-text: #1E3A5F;
+    --libur-green: #22C55E;
+    --libur-bg: #F0FDF4;
+    --libur-badge: #DCFCE7;
+    --libur-text: #14532D;
+    --gray-50: #FAFAFA;
+    --gray-100: #F3F4F6;
+    --gray-200: #E5E7EB;
+    --gray-300: #D1D5DB;
+    --gray-400: #9CA3AF;
+    --gray-500: #6B7280;
+    --gray-700: #374151;
+    --gray-900: #1F2937;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Newsreader', serif;
+    background: var(--cream);
+    color: var(--gray-900);
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 0 16px 60px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .header {
+    text-align: center;
+    padding: 36px 0 28px;
+  }
+  .header .bismillah {
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gray-400);
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 10px;
+  }
+  .header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--green-deep);
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+  }
+  .header .subtitle {
+    font-size: 14px;
+    color: var(--gray-500);
+    font-style: italic;
+    line-height: 1.6;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    background: var(--gray-100);
+    border-radius: 14px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .tab-btn {
+    flex: 1;
+    min-width: 110px;
+    padding: 10px 6px;
+    border-radius: 11px;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+    background: transparent;
+    color: var(--gray-400);
+    transition: all 0.2s;
+  }
+  .tab-btn.active {
+    background: #fff;
+    color: var(--gray-900);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .tab-btn:hover:not(.active) { color: var(--gray-700); }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* Shift selector buttons */
+  .shift-selector {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+  .shift-btn {
+    padding: 8px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+    border: 1.5px solid var(--gray-200);
+    background: #fff;
+    color: var(--gray-500);
+    transition: all 0.2s;
+  }
+  .shift-btn.active-ps { border-color: var(--gold); background: var(--gold-badge); color: var(--gold-text); }
+  .shift-btn.active-malam { border-color: var(--blue); background: var(--blue-badge); color: var(--blue-text); }
+  .shift-btn.active-libur { border-color: var(--libur-green); background: var(--libur-badge); color: var(--libur-text); }
+
+  /* Day selector */
+  .day-selector {
+    text-align: center;
+    margin-bottom: 16px;
+    font-size: 12px;
+    color: var(--gray-500);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .day-selector select {
+    margin-left: 8px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--gray-300);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+  }
+
+  /* Archetype Card */
+  .arch-card {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .arch-card.ps { border: 1.5px solid rgba(245,158,11,0.13); }
+  .arch-card.malam { border: 1.5px solid rgba(59,130,246,0.13); }
+  .arch-card.libur { border: 1.5px solid rgba(34,197,94,0.13); }
+
+  .arch-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+  }
+  .arch-header.ps { background: linear-gradient(135deg, var(--gold-bg) 0%, #fff 100%); }
+  .arch-header.malam { background: linear-gradient(135deg, var(--blue-bg) 0%, #fff 100%); }
+  .arch-header.libur { background: linear-gradient(135deg, var(--libur-bg) 0%, #fff 100%); }
+
+  .arch-header .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  .badge.ps { background: var(--gold-badge); color: var(--gold-text); }
+  .badge.malam { background: var(--blue-badge); color: var(--blue-text); }
+  .badge.libur { background: var(--libur-badge); color: var(--libur-text); }
+
+  .arch-header h3 {
+    display: inline;
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--gray-900);
+    vertical-align: middle;
+  }
+  .arch-header .arch-sub {
+    font-size: 13px;
+    color: var(--gray-500);
+    font-style: italic;
+    margin-top: 6px;
+  }
+
+  .arch-body { padding: 16px 20px; }
+
+  /* Prayer block */
+  .prayer-block {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    background: linear-gradient(135deg, #f0f7f0 0%, #e8f5e8 100%);
+    border-radius: 10px;
+    border-left: 3px solid var(--green-light);
+    font-size: 13px;
+    color: var(--green-mid);
+    margin-bottom: 6px;
+  }
+  .prayer-block .emoji { font-size: 18px; }
+  .prayer-block .name { font-weight: 600; }
+  .prayer-block .times { font-size: 11px; opacity: 0.7; }
+
+  /* Time block */
+  .time-block {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 14px;
+    border-radius: 10px;
+    background: var(--gray-50);
+    font-size: 13px;
+    margin-bottom: 6px;
+  }
+  .time-block .icon { font-size: 16px; margin-top: 1px; }
+  .time-block .time {
+    font-weight: 600;
+    color: var(--gray-700);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+  }
+  .time-block .label { font-weight: 600; color: var(--gray-900); margin-left: 8px; }
+  .time-block .detail { font-size: 11px; color: var(--gray-500); margin-top: 2px; line-height: 1.4; }
+
+  .info-block {
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 12px;
+    line-height: 1.6;
+    margin-bottom: 6px;
+  }
+  .info-block.blue { background: var(--blue-bg); color: #1E40AF; border-left: 3px solid var(--blue); }
+
+  /* Reminder footer */
+  .reminder {
+    padding: 14px 20px;
+    border-top: 1px solid #f3f4f6;
+    background: #FFFBEB;
+    font-size: 12px;
+    color: var(--gold-text);
+    line-height: 1.5;
+    border-radius: 0 0 14px 14px;
+  }
+
+  /* Calendar */
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+  }
+  .cal-header {
+    text-align: center;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 6px;
+    color: var(--gray-400);
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .cal-day {
+    padding: 8px 2px;
+    border-radius: 10px;
+    border: 1.5px solid transparent;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    transition: all 0.15s;
+  }
+  .cal-day:hover { transform: scale(1.05); }
+  .cal-day.ps { background: var(--gold-bg); border-color: rgba(245,158,11,0.25); }
+  .cal-day.malam { background: var(--blue-bg); border-color: rgba(59,130,246,0.25); }
+  .cal-day.libur { background: var(--libur-bg); border-color: rgba(34,197,94,0.25); }
+  .cal-day .num {
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .cal-day.ps .num { color: var(--gold-text); }
+  .cal-day.malam .num { color: var(--blue-text); }
+  .cal-day.libur .num { color: var(--libur-text); }
+  .cal-day .shift-label {
+    font-size: 8px;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .cal-day.ps .shift-label { background: var(--gold-badge); color: var(--gold-text); }
+  .cal-day.malam .shift-label { background: var(--blue-badge); color: var(--blue-text); }
+  .cal-day.libur .shift-label { background: var(--libur-badge); color: var(--libur-text); }
+  .cal-day .call-icon { font-size: 8px; }
+
+  .legend {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--gray-500);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .legend-swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+  }
+
+  .glance-box {
+    margin-top: 20px;
+    padding: 16px;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid var(--gray-200);
+    font-size: 12px;
+    color: var(--gray-500);
+    line-height: 1.6;
+  }
+
+  /* Family tracker */
+  .family-header {
+    padding: 20px;
+    background: var(--libur-bg);
+    border-radius: 14px;
+    border: 1px solid #BBF7D0;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  .family-header h3 { font-size: 17px; color: var(--libur-text); margin: 8px 0 6px; }
+  .family-header p { font-size: 13px; color: #166534; font-style: italic; line-height: 1.5; }
+
+  .call-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    border: 1.5px solid var(--gray-200);
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 8px;
+    user-select: none;
+  }
+  .call-item:hover { border-color: var(--libur-green); }
+  .call-item.done { border-color: var(--libur-green); background: var(--libur-bg); }
+
+  .checkbox {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    border: 2px solid var(--gray-300);
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: #fff;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .call-item.done .checkbox {
+    border-color: var(--libur-green);
+    background: var(--libur-green);
+  }
+
+  .call-info .date {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--gray-700);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .call-item.done .call-info .date { color: #166534; }
+  .call-info .meta { font-size: 12px; color: var(--gray-500); margin-top: 2px; }
+  .call-emoji { margin-left: auto; font-size: 20px; }
+
+  .tip-box {
+    margin-top: 20px;
+    padding: 16px;
+    background: #FFFBEB;
+    border-radius: 12px;
+    border: 1px solid #FDE68A;
+    font-size: 12px;
+    color: var(--gold-text);
+    line-height: 1.6;
+  }
+
+  /* Philosophy */
+  .phil-card {
+    padding: 24px;
+    border-radius: 16px;
+    margin-bottom: 16px;
+  }
+  .phil-card.main {
+    background: linear-gradient(135deg, #f0f7f0 0%, #e8f0e8 100%);
+    border: 1px solid var(--green-border);
+  }
+  .phil-card.white {
+    background: #fff;
+    border: 1px solid var(--gray-200);
+  }
+  .phil-card.quote {
+    background: #FFFBEB;
+    border: 1px solid #FDE68A;
+    text-align: center;
+  }
+  .phil-card h3 { font-size: 18px; color: var(--green-deep); margin-bottom: 12px; }
+  .phil-card h4 { font-size: 15px; color: var(--gray-700); margin-bottom: 10px; }
+  .phil-card p { font-size: 14px; line-height: 1.8; margin-bottom: 12px; }
+  .phil-card p:last-child { margin-bottom: 0; }
+  .phil-card .mono-block {
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 2;
+    margin: 8px 0;
+  }
+  .mono-block.blue-bg { background: var(--blue-bg); color: var(--blue-text); }
+  .mono-block.gold-bg { background: var(--gold-bg); color: var(--gold-text); }
+
+  .border-left-color {
+    border-left-width: 3px;
+    border-left-style: solid;
+  }
+  .bl-purple { border-left-color: #6366F1; }
+  .bl-green { border-left-color: var(--green-light); }
+  .bl-red { border-left-color: #EF4444; }
+  .bl-cyan { border-left-color: #06B6D4; }
+  .bl-violet { border-left-color: #8B5CF6; }
+  .bl-gold { border-left-color: var(--gold); }
+  .bl-pink { border-left-color: #EC4899; }
+  .bl-gray { border-left-color: var(--gray-500); }
+  .bl-libur { border-left-color: var(--libur-green); }
+  .bl-blue { border-left-color: var(--blue); }
+
+  .cal-hint {
+    font-size: 13px;
+    color: var(--gray-500);
+    text-align: center;
+    margin-bottom: 16px;
+    font-style: italic;
+  }
+
+  @media (max-width: 500px) {
+    .tabs { gap: 2px; }
+    .tab-btn { min-width: 70px; font-size: 10px; padding: 8px 4px; }
+    .shift-selector { gap: 4px; }
+    .shift-btn { padding: 6px 12px; font-size: 11px; }
+    .cal-day .num { font-size: 13px; }
+    .arch-header { padding: 16px; }
+    .arch-body { padding: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="bismillah">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</div>
+  <h1>April 2026 — A Gentle Map</h1>
+  <p class="subtitle">Your schedule is a set of intentions, not commandments.<br>Consistency over perfection. Progress over pressure.</p>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('archetypes')">📋 Archetypes</button>
+  <button class="tab-btn" onclick="switchTab('calendar')">📅 Calendar</button>
+  <button class="tab-btn" onclick="switchTab('family')">💚 Family</button>
+  <button class="tab-btn" onclick="switchTab('philosophy')">🌿 Your Why</button>
+</div>
+
+<div id="tab-archetypes" class="tab-content active"></div>
+<div id="tab-calendar" class="tab-content"></div>
+<div id="tab-family" class="tab-content"></div>
+<div id="tab-philosophy" class="tab-content"></div>
+
+<script>
+const PRAYER = {
+  1:{s:"04:40",z:"12:00",a:"15:14",m:"17:59",i:"19:09"},
+  2:{s:"04:40",z:"12:00",a:"15:14",m:"17:59",i:"19:08"},
+  3:{s:"04:40",z:"11:59",a:"15:14",m:"17:58",i:"19:08"},
+  4:{s:"04:40",z:"11:59",a:"15:13",m:"17:58",i:"19:07"},
+  5:{s:"04:39",z:"11:59",a:"15:13",m:"17:57",i:"19:07"},
+  6:{s:"04:39",z:"11:59",a:"15:13",m:"17:57",i:"19:06"},
+  7:{s:"04:39",z:"11:58",a:"15:13",m:"17:56",i:"19:06"},
+  8:{s:"04:39",z:"11:58",a:"15:13",m:"17:56",i:"19:05"},
+  9:{s:"04:39",z:"11:58",a:"15:13",m:"17:55",i:"19:05"},
+  10:{s:"04:38",z:"11:58",a:"15:13",m:"17:55",i:"19:04"},
+  11:{s:"04:38",z:"11:57",a:"15:13",m:"17:54",i:"19:04"},
+  12:{s:"04:38",z:"11:57",a:"15:13",m:"17:54",i:"19:03"},
+  13:{s:"04:38",z:"11:57",a:"15:13",m:"17:53",i:"19:03"},
+  14:{s:"04:38",z:"11:57",a:"15:13",m:"17:53",i:"19:02"},
+  15:{s:"04:37",z:"11:56",a:"15:13",m:"17:52",i:"19:02"},
+  16:{s:"04:37",z:"11:56",a:"15:13",m:"17:52",i:"19:01"},
+  17:{s:"04:37",z:"11:56",a:"15:13",m:"17:51",i:"19:01"},
+  18:{s:"04:37",z:"11:56",a:"15:13",m:"17:51",i:"19:00"},
+  19:{s:"04:37",z:"11:55",a:"15:13",m:"17:50",i:"19:00"},
+  20:{s:"04:36",z:"11:55",a:"15:13",m:"17:50",i:"19:00"},
+  21:{s:"04:36",z:"11:55",a:"15:13",m:"17:49",i:"18:59"},
+  22:{s:"04:36",z:"11:55",a:"15:13",m:"17:49",i:"18:59"},
+  23:{s:"04:36",z:"11:55",a:"15:13",m:"17:49",i:"18:58"},
+  24:{s:"04:36",z:"11:54",a:"15:13",m:"17:48",i:"18:58"},
+  25:{s:"04:35",z:"11:54",a:"15:13",m:"17:48",i:"18:57"},
+  26:{s:"04:35",z:"11:54",a:"15:14",m:"17:48",i:"18:57"},
+  27:{s:"04:35",z:"11:54",a:"15:14",m:"17:47",i:"18:57"},
+  28:{s:"04:35",z:"11:54",a:"15:14",m:"17:47",i:"18:56"},
+  29:{s:"04:35",z:"11:53",a:"15:14",m:"17:47",i:"18:56"},
+  30:{s:"04:35",z:"11:53",a:"15:14",m:"17:46",i:"18:56"}
+};
+
+const SHIFTS = {};
+[1,5,6,11,16].forEach(d=>SHIFTS[d]="PS");
+[2,7,12,17,27].forEach(d=>SHIFTS[d]="Malam");
+[3,4,8,9,10,13,14,15,18,19,20,21,22,23,24,25,26,28,29,30].forEach(d=>SHIFTS[d]="Libur");
+
+const FAMILY_DAYS = [3,8,13,18,21,24,28];
+let familyCalled = {};
+let currentShift = "PS";
+let currentDay = 1;
+
+function subMin(t,m){let[h,n]=t.split(":").map(Number);let x=h*60+n-m;if(x<0)x+=1440;return String(Math.floor(x/60)).padStart(2,"0")+":"+String(x%60).padStart(2,"0");}
+function addMin(t,m){let[h,n]=t.split(":").map(Number);let x=h*60+n+m;if(x>=1440)x-=1440;return String(Math.floor(x/60)).padStart(2,"0")+":"+String(x%60).padStart(2,"0");}
+function dow(d){return["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][new Date(2026,3,d).getDay()];}
+
+function switchTab(id){
+  document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el=>el.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  const labels = {archetypes:'📋 Archetypes',calendar:'📅 Calendar',family:'💚 Family',philosophy:'🌿 Your Why'};
+  document.querySelectorAll('.tab-btn').forEach(el=>{if(el.textContent.trim()===labels[id])el.classList.add('active');});
+  if(id==='archetypes') renderArchetypes();
+  if(id==='calendar') renderCalendar();
+  if(id==='family') renderFamily();
+  if(id==='philosophy') renderPhilosophy();
+}
+
+function prayerHTML(name,adzan,emoji){
+  return `<div class="prayer-block"><span class="emoji">${emoji}</span><div><div class="name">${name}</div><div class="times">Prep ${subMin(adzan,15)} · Adzan ${adzan} · until ${addMin(adzan,30)}</div></div></div>`;
+}
+
+function timeHTML(time,label,detail,icon,borderClass){
+  return `<div class="time-block border-left-color ${borderClass}"><span class="icon">${icon}</span><div><div><span class="time">${time}</span><span class="label">${label}</span></div>${detail?`<div class="detail">${detail}</div>`:''}</div></div>`;
+}
+
+function buildPS(day){
+  const p=PRAYER[day], wake=subMin(p.s,120), endS=addMin(p.s,30), endZ=addMin(p.z,30), endM=addMin(p.m,30), endI=addMin(p.i,30);
+  return [
+    timeHTML(wake,"Gentle Wake","Rise softly. Tahajjud or quiet du'a if your heart calls you.","🌙","bl-purple"),
+    prayerHTML("Subuh",p.s,"🕌"),
+    timeHTML(endS,"Adzkar & Quran","10 minutes of remembrance. No phone yet.","📖","bl-green"),
+    timeHTML(addMin(endS,10),"Morning Movement","Up to 40 min workout — whatever feels good today.","💪","bl-red"),
+    timeHTML("06:30","Shower & Prepare","Fresh and ready. Light breakfast.","🚿","bl-cyan"),
+    timeHTML("07:00","Transition Window","Breakfast, get settled. Maybe review today's priorities.","☕","bl-violet"),
+    timeHTML("08:00","Deep Work Begins","PS shift starts. Main programming work. You're in flow.","💻","bl-gold"),
+    prayerHTML("Zuhur",p.z,"🕌"),
+    timeHTML(endZ,"Rest & Recharge","Short nap — even 20 min counts. Your body earned this.","😴","bl-violet"),
+    timeHTML(addMin(endZ,30),"Afternoon Focus","Continue main work or switch to side hustle (max 3h total today).","🎯","bl-gold"),
+    prayerHTML("Asar",p.a,"🕌"),
+    timeHTML("16:00","Run & Move","5 min warm-up → 25 min run → secondary workout.","🏃","bl-red"),
+    timeHTML("17:30","Shower & Wind Down","Clean up. The hard part of today is behind you.","🚿","bl-cyan"),
+    prayerHTML("Maghrib",p.m,"🕌"),
+    timeHTML(endM,"Light Work or Rest","Wrap up any loose threads. No pressure.","📝","bl-gray"),
+    prayerHTML("Isya'",p.i,"🕌"),
+    timeHTML(endI,"Unwind","PS ends at 20:30. Gentle evening — no screens if possible.","🌿","bl-libur"),
+    timeHTML("21:00","Sleep","Lights out. You did enough today. Trust that.","🛏️","bl-purple"),
+  ].join('');
+}
+
+function buildMalam(day){
+  const p=PRAYER[day], wake=subMin(p.s,120), endS=addMin(p.s,30), endZ=addMin(p.z,30);
+  return [
+    `<div class="info-block blue"><strong>⚡ How this works:</strong> Malam runs 20:00–08:30. You sleep during it (21:00), wake for Subuh, and finish the shift by morning. Your prayers are always protected.</div>`,
+    timeHTML("—","Daytime Before Shift","If coming off a rest day: light side hustle, errands, or just exist.","🌤️","bl-gold"),
+    prayerHTML("Zuhur",p.z,"🕌"),
+    timeHTML(endZ,"Rest & Nap","You'll need reserves tonight. Nap guilt-free.","😴","bl-violet"),
+    prayerHTML("Asar",p.a,"🕌"),
+    timeHTML("16:00","Run & Move","5 min warm-up → 25 min run → secondary workout.","🏃","bl-red"),
+    timeHTML("17:30","Shower & Dinner","Fuel up well — long night ahead.","🍽️","bl-cyan"),
+    prayerHTML("Maghrib",p.m,"🕌"),
+    prayerHTML("Isya'",p.i,"🕌"),
+    timeHTML("20:00","Malam Shift Begins","Log in, check status. If quiet — prepare to rest.","🖥️","bl-blue"),
+    timeHTML("21:00","Sleep (During Shift)","Lights out. You'll wake for Subuh. The shift flexes for you.","🛏️","bl-purple"),
+    timeHTML(wake,"Gentle Wake","Rise for Subuh. Still on shift — check for incidents briefly.","🌙","bl-purple"),
+    prayerHTML("Subuh",p.s,"🕌"),
+    timeHTML(endS,"Adzkar & Quran","10 minutes. Then return to shift awareness.","📖","bl-green"),
+    timeHTML(addMin(endS,10),"Morning Movement","Light workout if energy allows — up to 40 min.","💪","bl-red"),
+    timeHTML("06:30","Shower","Freshen up. Shift wraps soon.","🚿","bl-cyan"),
+    timeHTML("08:30","Shift Ends → Rest","You made it. Eat, decompress, breathe.","✨","bl-libur"),
+  ].join('');
+}
+
+function buildLibur(day){
+  const p=PRAYER[day], wake=subMin(p.s,120), endS=addMin(p.s,30), endZ=addMin(p.z,30), endM=addMin(p.m,30);
+  const isCall = FAMILY_DAYS.includes(day);
+  let blocks = [
+    timeHTML(wake,"Gentle Wake","Tahajjud or quiet reflection. The world is still sleeping.","🌙","bl-purple"),
+    prayerHTML("Subuh",p.s,"🕌"),
+    timeHTML(endS,"Adzkar & Quran","10 minutes of peace before the day begins.","📖","bl-green"),
+    timeHTML(addMin(endS,10),"Morning Movement","Full 40 min workout. Push a little harder today if you want.","💪","bl-red"),
+    timeHTML("06:30","Shower & Breakfast","No rush. Enjoy this.","🚿","bl-cyan"),
+    timeHTML("07:30","Side Hustle Window","Up to 3 hours max. Build something meaningful.","🚀","bl-pink"),
+    timeHTML("10:30","Main Programming","Deep work on your primary job. Focus mode.","💻","bl-gold"),
+    prayerHTML("Zuhur",p.z,"🕌"),
+    timeHTML(endZ,"Nap & Recharge","30–45 min. Non-negotiable rest.","😴","bl-violet"),
+    timeHTML(addMin(endZ,45),"Continued Focus","More programming or learning. Stay curious.","🎯","bl-gold"),
+    prayerHTML("Asar",p.a,"🕌"),
+    timeHTML("16:00","Run & Move","5 min warm-up → 25 min run → secondary workout.","🏃","bl-red"),
+    timeHTML("17:30","Shower & Dinner","Refuel. Maybe cook something nice.","🍽️","bl-cyan"),
+    prayerHTML("Maghrib",p.m,"🕌"),
+  ];
+  if(isCall){
+    blocks.push(timeHTML(endM,"💚 Family Time","Today's a call day! Chat or video call — up to 1 hour. They miss you.","📱","bl-libur"));
+  } else {
+    blocks.push(timeHTML(endM,"Free Evening","Read, learn, reflect, or simply rest.","🌿","bl-libur"));
+  }
+  blocks.push(prayerHTML("Isya'",p.i,"🕌"));
+  blocks.push(timeHTML("21:00","Sleep","Sweet dreams. Tomorrow is another gift.","🛏️","bl-purple"));
+  return blocks.join('');
+}
+
+function renderArchetypes(){
+  const shiftDays = {PS:[],Malam:[],Libur:[]};
+  for(let d=1;d<=30;d++) shiftDays[SHIFTS[d]].push(d);
+  if(!shiftDays[currentShift].includes(currentDay)) currentDay=shiftDays[currentShift][0];
+
+  const titles={PS:"The PS Day",Malam:"The Malam Day",Libur:"The Libur Day"};
+  const subs={PS:"Grounded presence — your prayers frame the work, not the other way around.",Malam:"A quieter rhythm — the night shift bends to your sleep and prayers.",Libur:"Your day — build, move, connect, rest. In whatever order feels right."};
+  const notes={PS:"If an incident arises, breathe first. Your sholat windows are protected — always. Work bends around your deen, never the reverse. Side hustle can flex to tomorrow.",Malam:"Your shift is flexible enough for sleep. Wake for Subuh is non-negotiable to your soul, and that's beautiful. If the night is quiet, rest. If an incident calls, handle it — then return to peace.",Libur:"Libur doesn't mean 'do everything.' It means you choose what matters. Side hustle is capped at 3 hours. Protect your rest. You're building a life, not just a career."};
+
+  const cs = currentShift.toLowerCase();
+  const opts = shiftDays[currentShift].map(d=>`<option value="${d}" ${d===currentDay?'selected':''}>April ${d} (${dow(d)})</option>`).join('');
+  const body = currentShift==="PS"?buildPS(currentDay):currentShift==="Malam"?buildMalam(currentDay):buildLibur(currentDay);
+
+  document.getElementById('tab-archetypes').innerHTML = `
+    <div class="shift-selector">
+      <button class="shift-btn ${currentShift==='PS'?'active-ps':''}" onclick="currentShift='PS';renderArchetypes()">☀️ PS</button>
+      <button class="shift-btn ${currentShift==='Malam'?'active-malam':''}" onclick="currentShift='Malam';renderArchetypes()">🌙 Malam</button>
+      <button class="shift-btn ${currentShift==='Libur'?'active-libur':''}" onclick="currentShift='Libur';renderArchetypes()">🌿 Libur</button>
+    </div>
+    <div class="day-selector">Preview for day: <select onchange="currentDay=Number(this.value);renderArchetypes()">${opts}</select></div>
+    <div class="arch-card ${cs}">
+      <div class="arch-header ${cs}">
+        <span class="badge ${cs}">${currentShift}</span>
+        <h3>${titles[currentShift]}</h3>
+        <div class="arch-sub">${subs[currentShift]}</div>
+      </div>
+      <div class="arch-body">${body}</div>
+      <div class="reminder">☁️ <strong>Gentle Reminder:</strong> ${notes[currentShift]}</div>
+    </div>
+  `;
+}
+
+function renderCalendar(){
+  let cells = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d=>`<div class="cal-header">${d}</div>`).join('');
+  for(let i=0;i<3;i++) cells+='<div></div>'; // April 2026 starts Wednesday
+  for(let d=1;d<=30;d++){
+    const sh=SHIFTS[d].toLowerCase();
+    const isCall=FAMILY_DAYS.includes(d);
+    cells+=`<div class="cal-day ${sh}" onclick="currentShift='${SHIFTS[d]}';currentDay=${d};switchTab('archetypes')">
+      <span class="num">${d}</span>
+      <span class="shift-label">${SHIFTS[d]}</span>
+      ${isCall?'<span class="call-icon">📱</span>':''}
+    </div>`;
+  }
+  document.getElementById('tab-calendar').innerHTML = `
+    <p class="cal-hint">Tap any day to see its specific prayer times and schedule flow.</p>
+    <div class="cal-grid">${cells}</div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-swatch" style="background:var(--gold-bg);border:1px solid rgba(245,158,11,0.25)"></div>☀️ PS (5)</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:var(--blue-bg);border:1px solid rgba(59,130,246,0.25)"></div>🌙 Malam (5)</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:var(--libur-bg);border:1px solid rgba(34,197,94,0.25)"></div>🌿 Libur (20)</div>
+      <div class="legend-item">📱 Family call</div>
+    </div>
+    <div class="glance-box">
+      <strong style="color:var(--gray-700)">📊 Your April at a Glance:</strong><br>
+      You have <strong>20 Libur days</strong> this month — that's generous. Use them to build your side hustle, invest in health, and stay connected with family.
+      Your 5 Malam shifts are spread out, so recovery between them is natural.
+      The mid-month Libur streak (Apr 13–26) is <em>fourteen consecutive days off</em> — a beautiful window for deep project work or even a short trip home.
+    </div>
+  `;
+}
+
+function renderFamily(){
+  const items = FAMILY_DAYS.map((day,i)=>{
+    const done = familyCalled[day];
+    return `<div class="call-item ${done?'done':''}" onclick="familyCalled[${day}]=!familyCalled[${day}];renderFamily()">
+      <div class="checkbox">${done?'✓':''}</div>
+      <div class="call-info">
+        <div class="date">${dow(day)}, April ${day}</div>
+        <div class="meta">Call #${i+1} · After Maghrib (${PRAYER[day].m}) · up to 1 hour</div>
+      </div>
+      <div class="call-emoji">${done?'💚':'📱'}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('tab-family').innerHTML = `
+    <div class="family-header">
+      <div style="font-size:28px">💚</div>
+      <h3>Family Connection Tracker</h3>
+      <p>Once every 3 Libur days, for up to 1 hour.<br>Tap to mark when you've called. No guilt if you miss one — just reach out next time.</p>
+    </div>
+    ${items}
+    <div class="tip-box">
+      <strong>💡 Notion Tip:</strong> In your real Notion workspace, create a simple database with columns: Date (date), Called? (checkbox), Notes (text), Duration (number). Set a recurring reminder every 3 days during your Libur blocks. The spacing above gives you 7 call windows across the month — more than enough to stay close without it feeling like a chore.
+    </div>
+  `;
+}
+
+function renderPhilosophy(){
+  document.getElementById('tab-philosophy').innerHTML = `
+    <div class="phil-card main">
+      <h3>🌿 The Principles Behind Your Schedule</h3>
+      <p><strong>1. Prayer is the skeleton, not the interruption.</strong><br>Every block in your day exists <em>between</em> prayers, not the other way around. Your sholat windows never move — everything else adjusts.</p>
+      <p><strong>2. "Flexible windows" over "rigid blocks."</strong><br>The times listed are intentions. If your workout runs 25 minutes instead of 40, that's still a win. If your side hustle takes 1 hour instead of 3, you still showed up. Consistency means "most days," not "every single day perfectly."</p>
+      <p><strong>3. Incidents are expected, not failures.</strong><br>When work interrupts during PS or Malam, handle it with focus. Once resolved, return to your rhythm without self-criticism. The schedule is elastic — it always bounces back.</p>
+      <p><strong>4. Rest is productive.</strong><br>Your post-Zuhur nap isn't laziness — it's architecture. Your 9 PM bedtime isn't early — it's respect for the body that carries you through Tahajjud at 2:30 AM. Sleep is worship too.</p>
+      <p><strong>5. The side hustle has a ceiling.</strong><br>3 hours maximum. This protects your main career, your health, and your sanity. Build slowly. The side hustle serves your future — but your present matters more.</p>
+    </div>
+
+    <div class="phil-card white">
+      <h4>🔄 How Subuh Dynamically Fits Into Malam</h4>
+      <p style="font-size:13px;color:var(--gray-500)">Your Malam shift (20:00–08:30) overlaps with sleep and Subuh naturally:</p>
+      <div class="mono-block blue-bg">
+        20:00 → Shift starts (check in, monitor)<br>
+        21:00 → Sleep (shift allows this)<br>
+        ~02:37 → Wake (2h before Subuh)<br>
+        ~04:22 → Wudhu + Quran prep<br>
+        ~04:37 → Subuh adzan → Sholat<br>
+        ~05:07 → Adzkar → workout → shower<br>
+        08:30 → Shift ends
+      </div>
+      <p style="font-size:13px;color:var(--gray-500);font-style:italic">The wake time shifts only from 02:40 → 02:35 across the whole month. So gradual you'll barely notice.</p>
+    </div>
+
+    <div class="phil-card white">
+      <h4>🏃 How the Afternoon Run Fits Into PS</h4>
+      <p style="font-size:13px;color:var(--gray-500)">Your PS shift (08:00–20:30) includes your run window naturally:</p>
+      <div class="mono-block gold-bg">
+        ~15:13 → Asar adzan → Sholat (until ~15:43)<br>
+        16:00 → Warm-up (5 min) + Run (25 min)<br>
+        16:30 → Secondary workout<br>
+        17:30 → Shower (done before Maghrib prep)<br>
+        ~17:39 → Maghrib prep begins
+      </div>
+      <p style="font-size:13px;color:var(--gray-500);font-style:italic">There's about a 10-minute buffer between your shower and Maghrib prep. If an incident cuts into run time, even a 10-minute walk counts. Show up for movement, even imperfectly.</p>
+    </div>
+
+    <div class="phil-card quote">
+      <div style="font-size:22px;margin-bottom:8px">☁️</div>
+      <p style="font-size:14px;color:var(--gold-text);font-style:italic">"The most beloved deed to Allah is the most regular and constant even if it were little."</p>
+      <p style="font-size:11px;color:#B45309;margin:0">— Sahih al-Bukhari</p>
+    </div>
+  `;
+}
+
+// Initialize
+renderArchetypes();
+</script>
+</body>
+</html>
