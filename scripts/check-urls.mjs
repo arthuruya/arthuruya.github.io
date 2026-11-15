@@ -22,7 +22,9 @@ const built = walk(dist, { skipBinary: false })
     const rel = relative(dist, f);
     // build assets and font licence texts are not pages
     return (
-      PUBLIC_EXT.has(extname(f)) && !rel.startsWith('_astro' + sep) && !rel.startsWith('fonts' + sep)
+      PUBLIC_EXT.has(extname(f)) &&
+      !rel.startsWith('_astro' + sep) &&
+      !rel.startsWith('fonts' + sep)
     );
   })
   .map((f) => urlOf(dist, f))
