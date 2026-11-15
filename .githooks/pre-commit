@@ -1,0 +1,6 @@
+#!/bin/sh
+# Plain git hook (no Husky). Enabled by `git config core.hooksPath .githooks`
+# (done automatically by `npm install` / `npm ci` via the prepare script).
+set -e
+npm run --silent check:colours
+npm run --silent check:sanitize
