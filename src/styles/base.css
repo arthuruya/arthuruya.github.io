@@ -1,0 +1,16 @@
+:root {
+  --font-body: 'Atkinson Hyperlegible Next', 'Atkinson Fallback', system-ui, sans-serif;
+  --font-heading: 'Newsreader', 'Newsreader Fallback', Georgia, serif;
+  --font-mono: 'IBM Plex Mono', 'Plex Mono Fallback', ui-monospace, monospace;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+}
+
+h1 {
+  font-family: var(--font-heading);
+}

@@ -1,0 +1,5 @@
+/*
+ * Colour tokens. Phase 1 defines every colour here, for day and night.
+ * This is the ONLY file allowed to contain a hex, rgb(), hsl() or named colour
+ * (enforced by scripts/check-colours.mjs).
+ */
