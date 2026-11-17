@@ -6,7 +6,7 @@
  * reaches dist/. astro.config.mjs injects it as /_design/ under `astro dev` only.
  * Shows every Phase 1 component in English and Indonesian; the ThemeToggle switches
  * the whole page between the day and night charts. noindex as a second guard.
- * Strings come from the temporary stub in src/i18n/stub.ts (Phase 2 replaces it).
+ * UI strings come from the dictionaries; sample copy from src/dev/design-sample.ts.
  */
 import Base from '../layouts/Base.astro';
 import Card from '../components/Card.astro';
@@ -23,7 +23,9 @@ import Stat from '../components/Stat.astro';
 import Tag from '../components/Tag.astro';
 import ThemeToggle from '../components/ThemeToggle.astro';
 import type { Accent, Lang } from '../components/types';
-import { designPage as dp, sample, ui } from '../i18n/stub';
+import { t as dict } from '../i18n/index.ts';
+import { designPage as dp, sample } from '../dev/design-sample.ts';
+import { otherLang } from '../lib/routes.ts';
 import { placeholderContours } from '../lib/placeholder-contours';
 import tokensCss from '../styles/tokens.css?raw';
 import pairs from '../styles/pairs.json';
@@ -50,14 +52,14 @@ const ag = sample.awasGuncang;
 ---
 
 <Base lang="en" title={dp.title} description={dp.description} noindex>
-  <SkipLink label={ui.en.skipLink} />
+  <SkipLink label={dict('en').skipLink} />
 
   <header class="masthead" id="top">
     <ContourBackdrop data={contours} class="masthead-backdrop" />
     <div class="masthead-inner">
       <div class="masthead-bar">
         <code>/_design/</code>
-        <ThemeToggle labels={ui.en.theme} />
+        <ThemeToggle labels={dict('en').theme} />
       </div>
       <h1>{dp.heading}</h1>
       <p class="intro">{dp.intro}</p>
@@ -150,7 +152,7 @@ const ag = sample.awasGuncang;
     </Section>
 
     {panels.map(({ lang, accent }) => {
-      const t = ui[lang];
+      const t = dict(lang);
       const other = lang === 'en' ? 'id' : 'en';
       return (
         <Section id={`panel-${lang}`} lang={lang} accent={accent} labelledby={`h-${lang}`}>
@@ -161,7 +163,7 @@ const ag = sample.awasGuncang;
             <div class="controls">
               <LangSwitch
                 href={`#panel-${other}`}
-                hreflang={t.langSwitch.hreflang}
+                hreflang={otherLang(lang)}
                 label={t.langSwitch.label}
               />
               <ThemeToggle labels={t.theme} />
