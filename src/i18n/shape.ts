@@ -17,7 +17,34 @@ export interface Dictionary {
   /** label of the disclosure button that holds the nav on narrow screens (DRAFT) */
   menu: string;
   /** the static chart in the hero (DRAFT) */
-  hero: { chartLabel: string; markerUntia: string; markerStrait: string };
+  hero: {
+    chartLabel: string;
+    markerUntia: string;
+    markerStrait: string;
+    /** hidden paragraph that describes the animated chart */
+    description: string;
+    /** one-line captions on the two markers */
+    captionUntia: string;
+    captionStrait: string;
+    /** button label; {place} is replaced */
+    dropAt: string;
+    /** live-region messages; {place} and {dir} are replaced */
+    droppedAt: string;
+    droppedHere: string;
+    drifts: string;
+    onLand: string;
+    /** the eight compass points of the drift direction */
+    compass: {
+      north: string;
+      'north-east': string;
+      east: string;
+      'south-east': string;
+      south: string;
+      'south-west': string;
+      west: string;
+      'north-west': string;
+    };
+  };
   paper: { authors: string; abstract: string; abstractSource: string; doi: string };
   /** labels on Skripsi cards (DRAFT) */
   skripsi: { author: string; advisor: string; pages: string; year: string; library: string };

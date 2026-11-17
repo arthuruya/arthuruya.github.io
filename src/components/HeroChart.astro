@@ -8,44 +8,118 @@
  */
 import ContourBackdrop from './ContourBackdrop.astro';
 import { placeholderContours } from '../lib/placeholder-contours';
-import { fitPoints, MAKASSAR_STRAIT, UNTIA } from '../lib/markers';
+import type { ContourSet, Polyline } from '../lib/contours';
+import { makeView } from '../lib/drift/projection';
+import { MARKER_PAD } from '../lib/drift/config';
+import { MAKASSAR_STRAIT, UNTIA } from '../lib/markers';
+import type { Dictionary } from '../i18n/shape';
 
 export interface Props {
-  label: string;
-  untia: string;
-  strait: string;
+  hero: Dictionary['hero'];
 }
 
-const { label, untia, strait } = Astro.props;
+const { hero } = Astro.props;
+const label = hero.chartLabel;
+const untia = hero.markerUntia;
+const strait = hero.markerStrait;
+// Strings for the client script (RENCANA rule 9: no sentence is hard-coded in code).
+const strings = JSON.stringify({
+  dropAt: hero.dropAt,
+  droppedAt: hero.droppedAt,
+  droppedHere: hero.droppedHere,
+  drifts: hero.drifts,
+  onLand: hero.onLand,
+  compass: hero.compass,
+  places: { untia, strait },
+  captions: { untia: hero.captionUntia, strait: hero.captionStrait },
+});
 const W = 400;
 const H = 500;
-const contours = placeholderContours({ width: W, height: H, seed: 1729 });
-const [straitAt, untiaAt] = fitPoints([MAKASSAR_STRAIT, UNTIA], { width: W, height: H, pad: 0.22 });
+
+// The base map (src/assets/chart.json, scripts/build-chart.md) once it has been built;
+// until then the synthetic placeholder, flagged data-synthetic. Same projection as the canvas.
+interface ChartFile {
+  bbox: { lon0: number; lon1: number; lat0: number; lat1: number };
+  land: [number, number][][];
+  depth: Record<string, [number, number][][]>;
+}
+const chartFiles = import.meta.glob<ChartFile>('../assets/chart.json', {
+  eager: true,
+  import: 'default',
+});
+const chart = Object.values(chartFiles)[0];
+const snapshotBbox = { lon0: 116, lon1: 123, lat0: -8, lat1: 2 };
+const view = makeView(snapshotBbox, [MAKASSAR_STRAIT, UNTIA], W, H, MARKER_PAD);
+const project = (rings: [number, number][][]): Polyline[] =>
+  rings.map((r) =>
+    r.map(([lon, lat]) => {
+      const p = view.toPx(lon, lat);
+      return [p.x, p.y] as const;
+    }),
+  );
+const contours: ContourSet = chart
+  ? {
+      synthetic: false,
+      width: W,
+      height: H,
+      contours: [
+        ...Object.entries(chart.depth).map(([depth, rings]) => ({
+          level: Number(depth),
+          lines: project(rings),
+        })),
+        { level: 0, major: true, lines: project(chart.land) },
+      ],
+    }
+  : placeholderContours({ width: W, height: H, seed: 1729 });
+const straitAt = view.toPx(MAKASSAR_STRAIT.lon, MAKASSAR_STRAIT.lat);
+const untiaAt = view.toPx(UNTIA.lon, UNTIA.lat);
 ---
 
-<div id="drift-field" class="field" role="img" aria-label={label}>
-  <ContourBackdrop data={contours} class="contours" />
-  <svg
-    class="markers"
-    viewBox={`0 0 ${W} ${H}`}
-    preserveAspectRatio="xMidYMid slice"
-    aria-hidden="true"
-    focusable="false"
+<div class="drift">
+  <div
+    id="drift-field"
+    class="field"
+    role="img"
+    aria-label={label}
+    data-strings={strings}
+    data-data-base="/data/"
   >
-    <g class="marker">
-      <circle cx={straitAt.x} cy={straitAt.y} r="5" />
-      <text x={straitAt.x + 12} y={straitAt.y + 5}>
-        {strait}
-      </text>
-    </g>
-    <g class="marker">
-      <circle cx={untiaAt.x} cy={untiaAt.y} r="5" />
-      <text x={untiaAt.x + 12} y={untiaAt.y + 5}>
-        {untia}
-      </text>
-    </g>
-  </svg>
+    <ContourBackdrop data={contours} class="contours" />
+    <svg
+      class="markers"
+      viewBox={`0 0 ${W} ${H}`}
+      preserveAspectRatio="xMidYMid slice"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <g class="marker">
+        <circle cx={straitAt.x} cy={straitAt.y} r="5" />
+        <text x={straitAt.x + 12} y={straitAt.y + 5}>
+          {strait}
+        </text>
+      </g>
+      <g class="marker">
+        <circle cx={untiaAt.x} cy={untiaAt.y} r="5" />
+        <text x={untiaAt.x + 12} y={untiaAt.y + 5}>
+          {untia}
+        </text>
+      </g>
+    </svg>
+  </div>
+  <p class="visually-hidden">{hero.description}</p>
 </div>
+
+<script>
+  import { boot } from '../lib/drift/hero.ts';
+
+  const root = document.getElementById('drift-field');
+  if (root) {
+    const start = () => void boot(root);
+    // after idle, so the hero never competes with first paint (RENCANA 4.5)
+    if ('requestIdleCallback' in window) requestIdleCallback(start);
+    else setTimeout(start, 200);
+  }
+</script>
 
 <style>
   .field {
@@ -55,6 +129,108 @@ const [straitAt, untiaAt] = fitPoints([MAKASSAR_STRAIT, UNTIA], { width: W, heig
     border: var(--rule) solid var(--contour);
     border-radius: var(--radius);
     background: var(--paper-2);
+  }
+
+  /* the pointer should drop buoys, but vertical scrolling must keep working (4.6) */
+  .field {
+    touch-action: pan-y;
+  }
+
+  /* live: the canvas draws the chart; the static SVG stays only for no-JS and failure */
+  .field[data-live] :global(.contours),
+  .field[data-live] .markers {
+    display: none;
+  }
+
+  .field :global(.drift-canvas) {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
+  .field :global(.marker-pin) {
+    position: absolute;
+    transform: translate(-0.5rem, -50%);
+  }
+
+  .field :global(.marker-btn) {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    min-block-size: 2.75rem;
+    padding-inline: 0.25rem 0.5rem;
+    border: 0;
+    background: transparent;
+    color: var(--ink);
+    font: inherit;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+
+  .field :global(.marker-dot) {
+    inline-size: 0.75rem;
+    block-size: 0.75rem;
+    flex: none;
+    fill: var(--mark-yellow);
+    stroke: var(--ink);
+    stroke-width: 1.5;
+  }
+
+  .field :global(.marker-label) {
+    padding: 0 0.25rem;
+    background: var(--paper);
+  }
+
+  .field :global(.marker-caption) {
+    position: absolute;
+    inset-inline-start: 1.5rem;
+    inset-block-start: 100%;
+    inline-size: max-content;
+    max-inline-size: 14rem;
+    padding: 0.125rem 0.5rem;
+    border: var(--rule) solid var(--contour);
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 0.8rem;
+    line-height: 1.35;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .field :global(.marker-pin:hover .marker-caption),
+  .field :global(.marker-pin:focus-within .marker-caption),
+  .field :global(.marker-btn[aria-pressed='true'] + .marker-caption) {
+    opacity: 1;
+  }
+
+  .field :global(.drop-bar) {
+    position: absolute;
+    inset-inline: var(--s-3);
+    inset-block-end: var(--s-3);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    justify-content: flex-end;
+  }
+
+  .field :global(.drop-btn) {
+    min-block-size: 2.75rem;
+    padding: var(--s-2) var(--s-3);
+    border: 1.5px solid var(--ink);
+    border-radius: var(--radius);
+    background: var(--paper);
+    color: var(--ink);
+    font: inherit;
+    font-size: 0.875rem;
+    cursor: pointer;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .field :global(.marker-caption) {
+      transition: opacity 150ms;
+    }
   }
 
   .field :global(.contours),

@@ -96,11 +96,7 @@ const cvLinks = [
           <p class="tagline">{site.hero.tagline}</p>
           <NavMark kind="yellow" label={site.hero.next} as="p" />
         </div>
-        <HeroChart
-          label={d.hero.chartLabel}
-          untia={d.hero.markerUntia}
-          strait={d.hero.markerStrait}
-        />
+        <HeroChart hero={d.hero} />
       </div>
     </Section>
 

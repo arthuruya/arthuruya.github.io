@@ -11,7 +11,12 @@ npm ci
 npm run dev        # http://localhost:4321
 npm run build      # static site to dist/
 npm run preview
+npm run test:e2e   # Playwright against dist/ (build first)
 ```
+
+`npm run dev` first writes a **synthetic** current field to `public/data/` (`scripts/dev-field.mjs`;
+never overwrites a real one, never runs in production, git-ignored). The Drift Field base map
+comes from `scripts/build-chart.md`.
 
 `npm ci` also points git at `.githooks/` (pre-commit runs `check:colours` and
 `check:sanitize`).
@@ -33,6 +38,7 @@ npm run check:static   # no build needed
 | `check:i18n`         | the two dictionaries (`src/i18n/`) differ in keys, an empty value, a value identical in both languages (allow-list `scripts/i18n-allow-same.txt`); a content file missing in one language, a `lang` that disagrees with the file name, different keys or `order` between the two versions |
 | `check:facts`        | a case-study `facts[]` entry without a `source`, with a section that is not in `scripts/context-sections.json`, or with a number that is not written in that section; the two languages citing different sources                                                                          |
 | `check:placeholders` | lists every `TODO(arya)` in `src/` and `public/`; with `RELEASE=1` any hit fails (Phase 8 uses it)                                                                                                                                                                                        |
+| `check:snapshot`     | the Drift Field data (`public/data/`) is malformed or out of limits; with `RELEASE=1` also missing or flagged `synthetic` (spec: `docs/snapshot-spec.md`)                                                                                                                                 |
 | `check:urls`         | a built URL that existed on `main` and is gone; `urls.txt` out of date (`npm run urls:write` regenerates it)                                                                                                                                                                              |
 
 ## Content and languages
