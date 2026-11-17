@@ -1,5 +1,96 @@
 /*
- * Colour tokens. Phase 1 defines every colour here, for day and night.
+ * Design tokens: Chart Language (RENCANA Phase 1).
+ *
  * This is the ONLY file allowed to contain a hex, rgb(), hsl() or named colour
- * (enforced by scripts/check-colours.mjs).
+ * (enforced by scripts/check-colours.mjs). Every colour pair that carries text or
+ * a UI boundary is listed in src/styles/pairs.json and verified by
+ * `npm run check:contrast` for both themes.
+ *
+ * Keep this file flat: one `:root` block (day, plus all non-colour tokens) and one
+ * `:root[data-theme='night']` block (every colour token overridden). No @media here;
+ * responsive overrides live in base.css. scripts/lib/contrast.mjs relies on this.
+ *
+ * Starting values are the RENCANA Phase 1 table. A changed value carries an
+ * ADJUSTED comment with the original value and the measured reason.
  */
+
+:root {
+  color-scheme: light;
+
+  /* Day: chart paper */
+  --paper: #efe9d8; /* page background */
+  --paper-2: #e6dfcb; /* raised surface */
+  --ink: #142033; /* body text */
+  --ink-2: #3a4a63; /* secondary text, UI boundaries */
+  --contour: #9fb0bd; /* contour lines, rules (decorative only, never a UI boundary) */
+  --mark-red: #b3261e; /* boundary, attention */
+  --mark-green: #1f6b3a; /* OK, running */
+  /*
+   * ADJUSTED from #C79A00. The starting yellow measured 2.15:1 on --paper and
+   * 1.96:1 on --paper-2, below the 3:1 that the focus ring and the key-marker dot
+   * need (WCAG 1.4.11). Same hue (46.4 deg) and saturation (100 %), HSL lightness
+   * lowered from 0.390 to 0.310, the smallest step that passes: 3.31:1 on --paper,
+   * 3.01:1 on --paper-2. RENCANA asks for this ("day: darkened to pass 3:1").
+   */
+  --mark-yellow: #9e7a00; /* key marker, "Next", focus ring */
+
+  /* Type */
+  --font-body: 'Atkinson Hyperlegible Next', 'Atkinson Fallback', system-ui, sans-serif;
+  --font-heading: 'Newsreader', 'Newsreader Fallback', Georgia, serif;
+  --font-mono: 'IBM Plex Mono', 'Plex Mono Fallback', ui-monospace, monospace;
+
+  --fs-body: 1.0625rem; /* 17 px on phones; 18 px from 48 rem (base.css) */
+  --lh-body: 1.65; /* 1.7 from 48 rem (base.css) */
+  --fs-small: 0.875em;
+  --fs-mono: 0.9em; /* Plex Mono runs wide; keeps it optically level with body text */
+  --fs-h3: calc(var(--fs-body) * 1.25); /* 1.25 ratio above body */
+  --fs-h2: calc(var(--fs-body) * 1.5625); /* 1.25 squared */
+  --fs-h1: clamp(2.4rem, 5vw + 1rem, 4.4rem);
+  --lh-heading: 1.2;
+  --lh-h1: 1.04;
+  --measure: 66ch; /* 62-68 ch */
+
+  /* Spacing: 4 8 12 16 24 32 48 72 112 px, in rem so it follows the user's text size */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 3rem;
+  --s-8: 4.5rem;
+  --s-9: 7rem;
+
+  /* Layout */
+  --gutter: var(--s-4); /* 16 px on phones; wider from 48 rem (base.css) */
+  --content-max: 72rem;
+
+  /* Shape: the only radius and rule weights in use (check:style enforces <= 4 px) */
+  --radius: 2px;
+  --rule: 1px;
+  --focus-width: 3px;
+  --focus-offset: 2px;
+
+  /* Motion: <= 250 ms anywhere outside the hero (PLAN.md) */
+  --dur: 200ms;
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+
+  /* Contour backdrop stroke opacity (decoration, aria-hidden) */
+  --contour-opacity: 0.6;
+}
+
+:root[data-theme='night'] {
+  color-scheme: dark;
+
+  /* Night: night chart */
+  --paper: #0b1422;
+  --paper-2: #101c2e;
+  --ink: #e9e2cf;
+  --ink-2: #b9b6a8;
+  --contour: #2a3a52;
+  --mark-red: #e0766f;
+  --mark-green: #6fbf8a;
+  --mark-yellow: #e3c25a;
+
+  --contour-opacity: 0.9;
+}

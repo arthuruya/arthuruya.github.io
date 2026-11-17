@@ -1,16 +1,157 @@
-:root {
-  --font-body: 'Atkinson Hyperlegible Next', 'Atkinson Fallback', system-ui, sans-serif;
-  --font-heading: 'Newsreader', 'Newsreader Fallback', Georgia, serif;
-  --font-mono: 'IBM Plex Mono', 'Plex Mono Fallback', ui-monospace, monospace;
+/*
+ * Element defaults for the Chart Language. Colours come only from tokens.css.
+ * Anti-slop rules (check:style enforces): no gradients, no backdrop-filter, no
+ * shadow heavier than a 1 px rule, no radius above 4 px.
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
   margin: 0;
+  background: var(--paper);
+  color: var(--ink);
   font-family: var(--font-body);
-  font-size: 1.0625rem;
-  line-height: 1.65;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  font-kerning: normal;
+}
+
+@media (min-width: 48rem) {
+  :root {
+    --fs-body: 1.125rem; /* 18 px */
+    --lh-body: 1.7;
+    --gutter: var(--s-6);
+  }
+}
+
+/* Headings: Newsreader with its optical-size axis (opsz 12-72 shipped) */
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-optical-sizing: auto;
+  font-weight: 500;
+  line-height: var(--lh-heading);
+  text-wrap: balance;
 }
 
 h1 {
-  font-family: var(--font-heading);
+  font-size: var(--fs-h1);
+  line-height: var(--lh-h1);
+  letter-spacing: -0.01em;
+}
+
+h2 {
+  font-size: var(--fs-h2);
+}
+
+h3 {
+  font-size: var(--fs-h3);
+}
+
+p {
+  margin: 0;
+  max-width: var(--measure);
+  text-wrap: pretty;
+}
+
+/* Mono: DOI, coordinates, dates, stack lists, numeric facts */
+code,
+kbd,
+samp,
+.mono {
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  font-variant-numeric: tabular-nums slashed-zero;
+}
+
+a {
+  color: inherit;
+  text-decoration-line: underline;
+  text-decoration-color: var(--ink-2);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+/* Hover changes weight only; it never carries information alone. */
+a:hover {
+  text-decoration-thickness: 2px;
+  text-decoration-color: currentcolor;
+}
+
+strong {
+  font-weight: 700;
+}
+
+img,
+svg {
+  max-width: 100%;
+}
+
+hr {
+  border: 0;
+  border-top: var(--rule) solid var(--contour);
+  margin: var(--s-6) 0;
+}
+
+/* Focus: 3 px, offset 2 px, --mark-yellow (day value darkened in tokens.css to pass 3:1) */
+:focus-visible {
+  outline: var(--focus-width) solid var(--mark-yellow);
+  outline-offset: var(--focus-offset);
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Theme-dependent visible text (ThemeToggle). No data-theme means no theme.js ran. */
+:root:not([data-theme='night']) .when-night,
+:root[data-theme='night'] .when-day {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Windows High Contrast and other forced palettes: controls keep a visible border. */
+@media (forced-colors: active) {
+  button,
+  summary,
+  [role='button'] {
+    border: var(--rule) solid ButtonText;
+  }
+
+  :focus-visible {
+    outline-color: Highlight;
+  }
 }
