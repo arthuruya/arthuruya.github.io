@@ -14,16 +14,15 @@ facts:
 sections:
   problem:
     - 'Info BMKG membawa informasi publik BMKG ke ponsel: prakiraan cuaca sampai tingkat kecamatan dan kelurahan, gempa dan peringatan tsunami saat itu juga, animasi radar dan satelit, cuaca penerbangan dan maritim, kualitas udara, serta peringatan dini cuaca ekstrem.'
-    # TODO(arya): apa yang kurang atau bermasalah pada versi Ionic sehingga pindah ke Flutter layak dikerjakan? Satu atau dua kalimat. Halaman hanya boleh menyebut apa yang Arya tulis di sini.
-    - 'Saat saya mulai memegangnya pada 2022, aplikasi ini dibangun dengan Ionic.'
+    - 'Saat saya mulai memegangnya pada 2022, aplikasi ini masih versi lama berbasis Ionic, dengan tampilan dan pengalaman pengguna yang terasa kuno.'
   constraints:
     - 'Dua platform, Android dan iOS.'
     - 'Dua bahasa, Indonesia dan Inggris, dengan tema terang dan gelap.'
     - 'Notifikasi gempa dan cuaca terkirim otomatis. Tidak ada orang yang menekan tombol untuk mengirimnya.'
     - 'Sebagian pengguna mencari dengan suara atau mendengarkan lewat text-to-speech, bukan membaca layar.'
   decision:
-    # TODO(arya): kenapa Flutter, bukan tetap di Ionic (atau pilihan lain yang sempat dilihat)? Rencana meminta satu alternatif yang ditolak beserta alasan sebenarnya.
-    - 'Saya memindahkan aplikasi dari Ionic ke Flutter. Tampilannya jadi lebih segar dan modern, dan aplikasi kini menjangkau pengguna Android dan iOS.'
+    - 'Saya membangun ulang aplikasi dengan Flutter, bukan tetap di Ionic. Flutter adalah framework yang saya kuasai, dan tim setuju. Satu codebase melayani Android dan iOS, dan Google mendukungnya, sehingga pengembangan bisa cepat.'
+    - 'Tampilannya jadi lebih segar dan modern, dan aplikasi kini menjangkau pengguna Android dan iOS.'
     - 'State diatur GetX, panggilan jaringan lewat Dio, dan Hive menyimpan data di ponsel. Firebase menangani push notification, analitik, remote config dan Firestore. Peta memakai flutter_map dan Google Maps, grafik memakai Syncfusion, dan FVM mengunci versi Flutter supaya setiap build memakai versi yang sama.'
     - 'Setiap rilis diberi tag dan nomor versi. Sekarang aplikasi ada di versi 3.5.'
   result:
