@@ -4,10 +4,9 @@ The hero base map: land and bathymetry from **Natural Earth** (public domain), c
 Snapshot window plus 0.5 degrees, simplified to at most 120 KB. The raw files are not committed
 (`*.shp` etc. are not in the repo; unpack them outside it).
 
-**Natural Earth version and download date: TODO(arya): fill in when run.** The download page
-(`naturalearthdata.com/downloads/10m-physical-vectors/10m-bathymetry/`, checked 2026-11-17) links
-the files below and `?version=4.0.0` on the all-bathymetry bundle; confirm the version on the
-file you actually download, and record the date.
+**Natural Earth version 4.1.0** (from each file's `.VERSION.txt`), **downloaded 2026-11-17**. All five
+files came from `naturalearth.s3.amazonaws.com` as listed below. Result: `chart.json` 91 081 bytes
+(limit 120 KB), tolerance 0.0040 degrees.
 
 Real filenames (read from the page, not assumed):
 
@@ -18,13 +17,6 @@ Real filenames (read from the page, not assumed):
 | 1000 m | `ne_10m_bathymetry_J_1000.zip`           | `depth["1000"]`         |
 | 2000 m | `ne_10m_bathymetry_I_2000.zip`           | `depth["2000"]`         |
 | 4000 m | `ne_10m_bathymetry_G_4000.zip`           | `depth["4000"]`         |
-
-**Not verified:** the download host below (`naturalearth.s3.amazonaws.com`) is the one Natural
-Earth is commonly served from, but it could not be fetched when this was written (no download
-was possible in the build session). The page's own links are
-`https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/physical/<file>.zip`.
-If one host fails, use the other. The land file's name `ne_10m_land` was not on the bathymetry
-page; confirm it on the "10m Physical Vectors" page.
 
 Commands (run in a scratch directory outside this repo):
 
