@@ -1,0 +1,4 @@
+# Dictionary keys whose value is the same in English and Indonesian on purpose
+# (proper nouns, loan words). check:i18n fails on any other identical pair.
+paper.doi        # "DOI"
+caseStudy.stack  # "Stack" is used as is in Indonesian

@@ -1,0 +1,102 @@
+{
+  "1": {
+    "title": "Profil",
+    "numbers": ["2026", "2022", "2017", "2021", "2", "2028", "12"]
+  },
+  "2": {
+    "title": "Project unggulan — Software (BMKG)",
+    "numbers": []
+  },
+  "3": {
+    "title": "Project unggulan — Engineering (Stamar Untia)",
+    "numbers": []
+  },
+  "4": {
+    "title": "Riset",
+    "numbers": []
+  },
+  "5": {
+    "title": "Side projects",
+    "numbers": []
+  },
+  "6": {
+    "title": "Project lama (kuliah)",
+    "numbers": ["2021"]
+  },
+  "7": {
+    "title": "Skills",
+    "numbers": ["1000"]
+  },
+  "8": {
+    "title": "Prinsip kerja (untuk bagian \"About/Approach\")",
+    "numbers": []
+  },
+  "9": {
+    "title": "Angka yang bisa ditonjolkan",
+    "numbers": ["12", "9", "35", "5", "1", "20"]
+  },
+  "10": {
+    "title": "Catatan untuk pembuat portofolio",
+    "numbers": []
+  },
+  "2.1": {
+    "title": "Info BMKG — Official Mobile App ⭐",
+    "numbers": ["2022", "12", "3.5", "2.5"]
+  },
+  "2.2": {
+    "title": "Info BMKG Data Feed API",
+    "numbers": []
+  },
+  "2.3": {
+    "title": "Info BMKG App Health & Public Survey Dashboard",
+    "numbers": ["1", "2", "16"]
+  },
+  "2.4": {
+    "title": "Info BMKG Landing Page",
+    "numbers": []
+  },
+  "2.5": {
+    "title": "INAWAS — Regional Weather Dissemination App (Banten)",
+    "numbers": []
+  },
+  "3.1": {
+    "title": "Network & Observation Monitoring Platform (Zabbix NOC) ⭐",
+    "numbers": ["7.0", "6.0", "2", "3"]
+  },
+  "3.2": {
+    "title": "Remote Monitoring Peralatan Observasi (Aloptama)",
+    "numbers": ["1000", "4"]
+  },
+  "3.3": {
+    "title": "Station VPN (WireGuard Hub) ⭐",
+    "numbers": []
+  },
+  "3.4": {
+    "title": "wg-panel — WireGuard Peer Management Panel (self-built) ⭐",
+    "numbers": []
+  },
+  "3.5": {
+    "title": "Staff Internet Migration & Bandwidth Policy",
+    "numbers": ["20", "24"]
+  },
+  "3.6": {
+    "title": "untia-net — Staff Internet Management Portal (self-built) ⭐",
+    "numbers": ["7", "30", "12", "14", "5"]
+  },
+  "3.7": {
+    "title": "Data Service Workbench",
+    "numbers": []
+  },
+  "3.8": {
+    "title": "Untia Station Public Website",
+    "numbers": []
+  },
+  "3.9": {
+    "title": "HF Radar (WERA) — Selayar",
+    "numbers": []
+  },
+  "3.10": {
+    "title": "Operasional & Dokumentasi",
+    "numbers": []
+  }
+}
