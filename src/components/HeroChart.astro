@@ -1,0 +1,79 @@
+---
+/**
+ * The static chart in the hero: the no-JS and LCP content, and the slot Phase 4 fills
+ * (`#drift-field`). Contours are the synthetic placeholder until Phase 4 builds the
+ * Natural Earth chart (src/assets/chart.json); the coastline arrives with it. The two
+ * markers sit at their real positions relative to each other (RENCANA F2).
+ * The whole chart is one image for assistive tech, with a text label.
+ */
+import ContourBackdrop from './ContourBackdrop.astro';
+import { placeholderContours } from '../lib/placeholder-contours';
+import { fitPoints, MAKASSAR_STRAIT, UNTIA } from '../lib/markers';
+
+export interface Props {
+  label: string;
+  untia: string;
+  strait: string;
+}
+
+const { label, untia, strait } = Astro.props;
+const W = 400;
+const H = 500;
+const contours = placeholderContours({ width: W, height: H, seed: 1729 });
+const [straitAt, untiaAt] = fitPoints([MAKASSAR_STRAIT, UNTIA], { width: W, height: H, pad: 0.22 });
+---
+
+<div id="drift-field" class="field" role="img" aria-label={label}>
+  <ContourBackdrop data={contours} class="contours" />
+  <svg
+    class="markers"
+    viewBox={`0 0 ${W} ${H}`}
+    preserveAspectRatio="xMidYMid slice"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <g class="marker">
+      <circle cx={straitAt.x} cy={straitAt.y} r="5" />
+      <text x={straitAt.x + 12} y={straitAt.y + 5}>
+        {strait}
+      </text>
+    </g>
+    <g class="marker">
+      <circle cx={untiaAt.x} cy={untiaAt.y} r="5" />
+      <text x={untiaAt.x + 12} y={untiaAt.y + 5}>
+        {untia}
+      </text>
+    </g>
+  </svg>
+</div>
+
+<style>
+  .field {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border: var(--rule) solid var(--contour);
+    border-radius: var(--radius);
+    background: var(--paper-2);
+  }
+
+  .field :global(.contours),
+  .markers {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
+  .marker circle {
+    fill: var(--mark-yellow);
+    stroke: var(--ink);
+    stroke-width: 1.5;
+  }
+
+  .marker text {
+    fill: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 15px;
+  }
+</style>
