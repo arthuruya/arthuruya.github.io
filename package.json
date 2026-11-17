@@ -15,6 +15,7 @@
     "check:colours": "node scripts/check-colours.mjs",
     "check:sanitize": "node scripts/check-sanitize.mjs",
     "check:contrast": "node scripts/check-contrast.mjs",
+    "check:style": "node scripts/check-style.mjs",
     "check:astro": "astro check",
     "check:html": "node scripts/check-html.mjs",
     "check:urls": "node scripts/check-urls.mjs",
@@ -23,7 +24,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "vitest run",
-    "check:static": "npm run check:colours && npm run check:sanitize && npm run check:contrast && npm run check:astro && npm run lint && npm run format:check && npm run test",
+    "check:static": "npm run check:colours && npm run check:sanitize && npm run check:contrast && npm run check:style && npm run check:astro && npm run lint && npm run format:check && npm run test",
     "check": "npm run check:static && npm run build && npm run check:html && npm run check:urls"
   },
   "dependencies": {
