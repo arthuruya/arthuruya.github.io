@@ -5,8 +5,7 @@ order: 4
 title: untia-net
 dek: 'Portal web untuk mengelola internet pegawai, yang melakukan setiap perubahan lewat RADIUS dan tidak menyimpan kredensial router inti.'
 role: Engineer, Stasiun Meteorologi Maritim
-# TODO(arya): periode pembuatan untia-net, dengan bentuk yang sama seperti case study lain (mis. "Okt 2026").
-period: 'TODO(arya): periode'
+period: Okt–Nov 2026
 stack: [Python, Flask, waitress, htmx, MariaDB, FreeRADIUS, MikroTik REST API]
 facts:
   - { label: Operator teknisi, value: '5', source: '3.6' }
@@ -15,7 +14,6 @@ facts:
   - { label: Log pelanggaran disimpan, value: 14 hari, source: '3.6' }
 sections:
   problem:
-    # TODO(arya): DRAF. Kalimat ini dari baris pertama CONTEXT §3.6, di luar daftar fakta Phase A1. Setujui, atau tulis masalahnya dengan kata-kata Arya sendiri.
     - 'Pekerjaan harian mengelola internet pegawai dilakukan di daloRADIUS dan Winbox. untia-net menggantikannya dengan web yang dibuat untuk teknisi.'
   constraints:
     - 'Lima teknisi mengoperasikannya.'

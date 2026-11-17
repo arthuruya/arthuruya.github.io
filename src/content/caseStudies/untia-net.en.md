@@ -5,8 +5,7 @@ order: 4
 title: untia-net
 dek: 'A web portal for managing staff internet that makes every change through RADIUS and keeps the core router’s credentials out of the web app.'
 role: Engineer, Maritime Meteorological Station
-# TODO(arya): the period you built untia-net, in the same form as the other case studies (e.g. "Oct 2026").
-period: 'TODO(arya): period'
+period: Oct–Nov 2026
 stack: [Python, Flask, waitress, htmx, MariaDB, FreeRADIUS, MikroTik REST API]
 facts:
   - { label: Technician operators, value: '5', source: '3.6' }
@@ -15,7 +14,6 @@ facts:
   - { label: Violation log kept for, value: 14 days, source: '3.6' }
 sections:
   problem:
-    # TODO(arya): DRAFT. This sentence comes from the first line of CONTEXT §3.6, which is outside the fact list for Phase A1. Approve it or give the problem in your own words.
     - 'The daily work of managing staff internet was done in daloRADIUS and Winbox. untia-net replaces that with a web app made for technicians.'
   constraints:
     - 'Five technicians operate it.'
