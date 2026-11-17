@@ -1,3 +1,5 @@
 # Literal strings (case-insensitive) that check:sanitize may let through.
 # One per line. Add a host here ONLY if it is a public BMKG service Arya has
 # confirmed can be named in public. Everything else under *.bmkg.go.id fails.
+
+stamar-makassar.bmkg.go.id # public station website
