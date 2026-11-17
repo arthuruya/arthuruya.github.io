@@ -4,3 +4,5 @@ paper.doi        # "DOI"
 caseStudy.stack  # "Stack" is used as is in Indonesian
 menu             # "Menu" is used as is in Indonesian
 hero.markerUntia # a place name
+noc.statusOk     # "OK"
+noc.statusAlarm  # "ALARM"

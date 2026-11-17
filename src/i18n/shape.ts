@@ -58,6 +58,34 @@ export interface Dictionary {
     backHome: string;
     next: string;
   };
+  /** the NOC dependency diagram on the monitoring-noc case study (DRAFT) */
+  noc: {
+    heading: string;
+    /** accessible name of the figure */
+    label: string;
+    /** accessible name of the scrollable area that holds the diagram */
+    scrollLabel: string;
+    /** shown with JS, under the diagram */
+    hint: string;
+    /** static caption, shown without JS; {node} is the failed node, {count} the suppressed checks */
+    captionStatic: string;
+    switchLabel: string;
+    alarmsCount: string;
+    reset: string;
+    statusOk: string;
+    statusAlarm: string;
+    statusSuppressed: string;
+    /** the live-region sentences; {count} and {names} are replaced */
+    summary: {
+      none: string;
+      alarmsOne: string;
+      alarmsMany: string;
+      suppressedOne: string;
+      suppressedMany: string;
+      naiveOne: string;
+      naiveMany: string;
+    };
+  };
   backToTop: string;
   /** 404 page (DRAFT) */
   notFound: { title: string; body: string; toHome: string };

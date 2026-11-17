@@ -7,6 +7,7 @@ import Base from '../layouts/Base.astro';
 import Heading from '../components/Heading.astro';
 import LangSwitch from '../components/LangSwitch.astro';
 import LinkArrow from '../components/LinkArrow.astro';
+import NocDiagram from '../components/NocDiagram.astro';
 import Section from '../components/Section.astro';
 import SkipLink from '../components/SkipLink.astro';
 import Stat from '../components/Stat.astro';
@@ -77,6 +78,15 @@ const next = all[(index + 1) % all.length]!;
         ))}
       </ul>
     </Section>
+
+    {slug === 'monitoring-noc' && (
+      <Section labelledby="noc" accent="green">
+        <Heading level={2} id="noc">
+          {d.noc.heading}
+        </Heading>
+        <NocDiagram lang={lang} strings={d.noc} />
+      </Section>
+    )}
 
     <nav class="more">
       <LinkArrow href={homePath(lang)} back>
