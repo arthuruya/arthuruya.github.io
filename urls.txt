@@ -1,1 +1,12 @@
 /
+/404.html
+/id/
+/id/work/info-bmkg/
+/id/work/monitoring-noc/
+/id/work/station-vpn/
+/robots.txt
+/sitemap-0.xml
+/sitemap-index.xml
+/work/info-bmkg/
+/work/monitoring-noc/
+/work/station-vpn/

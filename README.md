@@ -23,14 +23,29 @@ npm run check          # everything below, plus a build, then the dist/ checks
 npm run check:static   # no build needed
 ```
 
-| Script           | Fails on                                                                                                                                                                   |
-| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `check:colours`  | any hex, `rgb()`, `hsl()` or named colour outside `src/styles/tokens.css`                                                                                                  |
-| `check:sanitize` | IPv4, `password`/`secret`/`token=`, private hosts, `*.bmkg.go.id` hosts not in `scripts/allowlist.txt`, ports after hostnames (scans `src/ public/ docs/`)                 |
-| `check:contrast` | a text/background pair in `src/styles/pairs.json` below its WCAG threshold (4.5 text, 3 UI) in day or night; a day colour with no night value                              |
-| `check:style`    | gradients, `backdrop-filter`, blur/drop-shadow filters, shadows heavier than a 1px rule, radius above 4px, Inter/Space Grotesk, custom cursors                             |
-| `check:html`     | wrong `lang`, not exactly one `<h1>`, `<img>` without `alt`, `href="#"`, dead internal links, missing or duplicate title/description, missing `hreflang` pair (on `dist/`) |
-| `check:urls`     | a built URL that existed on `main` and is gone; `urls.txt` out of date (`npm run urls:write` regenerates it)                                                               |
+| Script               | Fails on                                                                                                                                                                                                                                                                                  |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `check:colours`      | any hex, `rgb()`, `hsl()` or named colour outside `src/styles/tokens.css`                                                                                                                                                                                                                 |
+| `check:sanitize`     | IPv4, `password`/`secret`/`token=`, private hosts, `*.bmkg.go.id` hosts not in `scripts/allowlist.txt`, ports after hostnames (scans `src/ public/ docs/`)                                                                                                                                |
+| `check:contrast`     | a text/background pair in `src/styles/pairs.json` below its WCAG threshold (4.5 text, 3 UI) in day or night; a day colour with no night value                                                                                                                                             |
+| `check:style`        | gradients, `backdrop-filter`, blur/drop-shadow filters, shadows heavier than a 1px rule, radius above 4px, Inter/Space Grotesk, custom cursors                                                                                                                                            |
+| `check:html`         | wrong `lang`, not exactly one `<h1>`, `<img>` without `alt`, `href="#"`, dead internal links, missing or duplicate title/description, missing `hreflang` pair (on `dist/`)                                                                                                                |
+| `check:i18n`         | the two dictionaries (`src/i18n/`) differ in keys, an empty value, a value identical in both languages (allow-list `scripts/i18n-allow-same.txt`); a content file missing in one language, a `lang` that disagrees with the file name, different keys or `order` between the two versions |
+| `check:facts`        | a case-study `facts[]` entry without a `source`, with a section that is not in `scripts/context-sections.json`, or with a number that is not written in that section; the two languages citing different sources                                                                          |
+| `check:placeholders` | lists every `TODO(arya)` in `src/` and `public/`; with `RELEASE=1` any hit fails (Phase 8 uses it)                                                                                                                                                                                        |
+| `check:urls`         | a built URL that existed on `main` and is gone; `urls.txt` out of date (`npm run urls:write` regenerates it)                                                                                                                                                                              |
+
+## Content and languages
+
+Two explicit route trees: `/` and `/id/`; slugs are identical. Content lives in
+`src/content/<collection>/<name>.en.md` and `<name>.id.md` (schemas in
+`src/content.config.ts`); interface strings in `src/i18n/en.ts` and `id.ts`. Routes:
+`src/lib/routes.ts`. Missing facts are `TODO(arya): ...` in the file.
+
+`public/lang.js` runs only on `/` (Indonesian browser or saved choice goes to `/id/`);
+`public/lang-switch.js` runs everywhere and remembers a manual switch.
+`scripts/context-sections.json` is generated from the context document that stays
+outside this repo (`node scripts/sync-context-sections.mjs <path>`); `check:facts` reads it.
 
 Also run by `check`: `astro check`, `eslint`, `prettier --check`, `vitest run`.
 
