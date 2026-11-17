@@ -29,8 +29,9 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "check:static": "npm run check:colours && npm run check:sanitize && npm run check:contrast && npm run check:style && npm run check:i18n && npm run check:facts && npm run check:placeholders && npm run check:snapshot && npm run check:astro && npm run lint && npm run format:check && npm run test",
-    "check": "npm run check:static && npm run build && npm run check:html && npm run check:urls"
+    "check:static": "npm run check:colours && npm run check:sanitize && npm run check:contrast && npm run check:style && npm run check:i18n && npm run check:facts && npm run check:copy && npm run check:placeholders && npm run check:snapshot && npm run check:astro && npm run lint && npm run format:check && npm run test",
+    "check": "npm run check:static && npm run build && npm run check:html && npm run check:urls",
+    "check:copy": "node scripts/check-copy.mjs"
   },
   "dependencies": {
     "astro": "7.4.12"
