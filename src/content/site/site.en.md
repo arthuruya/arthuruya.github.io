@@ -41,10 +41,9 @@ contact:
     cvId: CV (Indonesian)
     cvEn: CV (English)
   emailFallback: 'Email: use LinkedIn below'
-  # TODO(arya): F3, the personal email goes here as two parts (user, domain). It was given in chat on 2026-11-15 and is not in any file the agent can read.
   email:
-    user: 'TODO(arya): email, part before the @'
-    domain: 'TODO(arya): email, part after the @'
+    user: arya.b.alhaq
+    domain: gmail.com
   links:
     linkedin: https://www.linkedin.com/in/arya-bratasena
     github: https://github.com/arthuruya

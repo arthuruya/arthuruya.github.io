@@ -5,8 +5,7 @@ order: 2
 title: Monitoring NOC + Aloptama
 dek: "One monitoring platform for a station's network and observation instruments, so one fault raises one alarm."
 role: Engineer, Maritime Meteorological Station
-# TODO(arya): the period (start and end) of this work is not in the source document.
-period: 'TODO(arya): period of this work'
+period: Sep 2026–present
 stack:
   [Zabbix 7.0, SNMP, Zabbix agent 2, HTTP agent, AlmaLinux, VirtualBox, Telegram, Healthchecks.io]
 facts:

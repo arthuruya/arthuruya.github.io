@@ -5,8 +5,7 @@ order: 2
 title: Monitoring NOC + Aloptama
 dek: 'Satu platform pemantauan untuk jaringan dan alat observasi stasiun, sehingga satu gangguan memicu satu alarm.'
 role: Engineer, Stasiun Meteorologi Maritim
-# TODO(arya): periode pekerjaan ini tidak ada di dokumen sumber.
-period: 'TODO(arya): periode pekerjaan ini'
+period: Sep 2026–sekarang
 stack:
   [Zabbix 7.0, SNMP, Zabbix agent 2, HTTP agent, AlmaLinux, VirtualBox, Telegram, Healthchecks.io]
 facts:

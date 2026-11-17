@@ -41,10 +41,9 @@ contact:
     cvId: CV (Bahasa Indonesia)
     cvEn: CV (Inggris)
   emailFallback: 'Email: gunakan LinkedIn di bawah'
-  # TODO(arya): F3, email pribadi diisi di sini dalam dua bagian (user, domain). Diberikan lewat chat pada 2026-11-15 dan tidak ada di file mana pun yang bisa dibaca agen.
   email:
-    user: 'TODO(arya): email, bagian sebelum @'
-    domain: 'TODO(arya): email, bagian sesudah @'
+    user: arya.b.alhaq
+    domain: gmail.com
   links:
     linkedin: https://www.linkedin.com/in/arya-bratasena
     github: https://github.com/arthuruya

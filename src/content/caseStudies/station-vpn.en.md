@@ -5,8 +5,7 @@ order: 3
 title: Station VPN + wg-panel
 dek: 'A self-hosted WireGuard hub for technician access, with observation equipment kept in a separate, restricted class.'
 role: Engineer, Maritime Meteorological Station
-# TODO(arya): the period (start and end) of this work is not in the source document.
-period: 'TODO(arya): period of this work'
+period: Oct 2026
 stack: [WireGuard, AlmaLinux, nftables, git, Python, Flask, waitress, htmx, systemd]
 facts:
   - { label: SSH, value: Key-only, source: '3.3' }
