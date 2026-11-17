@@ -4,7 +4,12 @@
  */
 import type { Lang } from '../components/types.ts';
 
-export const CASE_STUDY_SLUGS = ['info-bmkg', 'monitoring-noc', 'station-vpn'] as const;
+export const CASE_STUDY_SLUGS = [
+  'info-bmkg',
+  'monitoring-noc',
+  'station-vpn',
+  'untia-net',
+] as const;
 export type CaseStudySlug = (typeof CASE_STUDY_SLUGS)[number];
 
 export const homePath = (lang: Lang): string => (lang === 'id' ? '/id/' : '/');
