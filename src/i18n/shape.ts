@@ -14,7 +14,11 @@ export interface Dictionary {
   langSwitch: { label: string };
   /** accessible names of landmarks and lists (DRAFT) */
   aria: { mainNav: string };
-  paper: { authors: string; abstract: string; doi: string };
+  /** label of the disclosure button that holds the nav on narrow screens (DRAFT) */
+  menu: string;
+  /** the static chart in the hero (DRAFT) */
+  hero: { chartLabel: string; markerUntia: string; markerStrait: string };
+  paper: { authors: string; abstract: string; abstractSource: string; doi: string };
   /** labels on Skripsi cards (DRAFT) */
   skripsi: { author: string; advisor: string; pages: string; year: string; library: string };
   /** labels on case-study cards and pages (DRAFT) */

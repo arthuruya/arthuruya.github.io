@@ -22,7 +22,7 @@ export interface Props {
   role: string;
   abstract?: string;
   abstractLang?: string;
-  labels: { authors: string; abstract: string; doi: string };
+  labels: { authors: string; abstract: string; abstractSource: string; doi: string };
   open?: boolean;
 }
 
@@ -79,6 +79,7 @@ if (selfIndex < 0 || selfIndex >= authors.length) {
           <blockquote class="abstract" lang={abstractLang}>
             <p>{abstract}</p>
           </blockquote>
+          <p class="source">{labels.abstractSource}</p>
         </>
       )}
     </div>
@@ -178,6 +179,11 @@ if (selfIndex < 0 || selfIndex >= authors.length) {
     font-family: var(--font-mono);
     font-size: var(--fs-mono);
     overflow-wrap: anywhere;
+  }
+
+  .source {
+    color: var(--ink-2);
+    font-size: var(--fs-small);
   }
 
   .abstract {

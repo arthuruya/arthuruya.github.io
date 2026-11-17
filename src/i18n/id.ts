@@ -10,7 +10,19 @@ export const id: Dictionary = {
   },
   langSwitch: { label: 'English' },
   aria: { mainNav: 'Utama' },
-  paper: { authors: 'Penulis', abstract: 'Abstrak', doi: 'DOI' },
+  menu: 'Menu',
+  hero: {
+    chartLabel: 'Peta kawasan Selat Makassar dengan dua tempat bertanda: Selat Makassar dan Untia.',
+    markerUntia: 'Untia',
+    markerStrait: 'Selat Makassar',
+  },
+  paper: {
+    authors: 'Penulis',
+    abstract: 'Abstrak',
+    abstractSource:
+      'Abstrak seperti diterbitkan EDP Sciences dengan lisensi CC BY 4.0. Bahasa Inggris.',
+    doi: 'DOI',
+  },
   skripsi: {
     author: 'Penulis',
     advisor: 'Pembimbing',

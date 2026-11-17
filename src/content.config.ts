@@ -189,13 +189,20 @@ const site = defineCollection({
       }),
       /** shown before JS runs and under <noscript>; the address is never in the HTML */
       emailFallback: z.string(),
-      /** the two parts the address is assembled from (public/contact.js, Phase 3) */
+      /** the two parts the address is assembled from (public/contact.js) */
       email: z.object({ user: z.string(), domain: z.string() }),
       links: z.object({ linkedin: z.url(), github: z.url(), orcid: z.url() }),
       /** root-relative paths of CV PDFs; omitted until the files exist (F6) */
       cv: z.object({ id: z.string().optional(), en: z.string().optional() }).default({}),
     }),
-    colophon: z.object({ cookies: z.string() }),
+    colophon: z.object({
+      cookies: z.string(),
+      fonts: z.string(),
+      /** label before the build date */
+      builtOn: z.string(),
+      /** link text for the source repository */
+      source: z.string(),
+    }),
   }),
 });
 
