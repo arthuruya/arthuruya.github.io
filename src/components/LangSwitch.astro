@@ -1,0 +1,51 @@
+---
+/**
+ * A plain link to the same page in the other language, labelled in that language.
+ * Phase 2 adds `public/lang.js`, which stores the choice in localStorage.lang on
+ * click; it finds these links by `data-lang-switch`.
+ */
+import type { Lang } from './types';
+
+export interface Props {
+  href: string;
+  /** language of the target page */
+  hreflang: Lang;
+  /** name of the target language, in that language ("Bahasa Indonesia", "English") */
+  label: string;
+}
+
+const { href, hreflang, label } = Astro.props;
+---
+
+<a class="lang-switch" href={href} hreflang={hreflang} lang={hreflang} data-lang-switch={hreflang}>
+  <span class="code" aria-hidden="true">
+    {hreflang.toUpperCase()}
+  </span>
+  <span>{label}</span>
+</a>
+
+<style>
+  .lang-switch {
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--s-2);
+    text-decoration: none;
+  }
+
+  .lang-switch span:last-child {
+    text-decoration-line: underline;
+    text-decoration-color: var(--ink-2);
+    text-underline-offset: 0.2em;
+  }
+
+  .lang-switch:hover span:last-child {
+    text-decoration-thickness: 2px;
+    text-decoration-color: currentcolor;
+  }
+
+  .code {
+    font-family: var(--font-mono);
+    font-size: var(--fs-small);
+    color: var(--ink-2);
+  }
+</style>

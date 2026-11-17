@@ -1,0 +1,42 @@
+---
+/**
+ * One numeric fact: value in mono (like a sounding on a chart), label in text.
+ * `source` is the CONTEXT section the number comes from (Phase 2 makes it mandatory
+ * through facts[].source); it is kept in the markup for review, never shown.
+ */
+export interface Props {
+  value: string;
+  label: string;
+  source?: string;
+  lang?: string;
+}
+
+const { value, label, source, lang } = Astro.props;
+---
+
+<p class="stat" data-source={source} lang={lang}>
+  <span class="value">{value}</span>
+  <span class="label">{label}</span>
+</p>
+
+<style>
+  .stat {
+    display: grid;
+    gap: var(--s-1);
+    margin: 0;
+  }
+
+  .value {
+    font-family: var(--font-mono);
+    font-size: var(--fs-h3);
+    font-weight: 500;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums slashed-zero;
+  }
+
+  .label {
+    color: var(--ink-2);
+    font-size: var(--fs-small);
+    line-height: 1.4;
+  }
+</style>

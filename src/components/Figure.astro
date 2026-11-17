@@ -1,0 +1,49 @@
+---
+/** A figure with an optional numbered caption ("Fig. 1" comes from the caller). */
+export interface Props {
+  caption?: string;
+  label?: string;
+  lang?: string;
+  class?: string;
+}
+
+const { caption, label, lang, class: className } = Astro.props;
+---
+
+<figure class:list={['figure', className]} lang={lang}>
+  <div class="media">
+    <slot />
+  </div>
+  {caption && (
+    <figcaption>
+      {label && <span class="label">{label}</span>}
+      {caption}
+    </figcaption>
+  )}
+</figure>
+
+<style>
+  .figure {
+    display: grid;
+    gap: var(--s-3);
+    margin: 0;
+  }
+
+  .media {
+    border: var(--rule) solid var(--contour);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  figcaption {
+    max-width: var(--measure);
+    color: var(--ink-2);
+    font-size: var(--fs-small);
+  }
+
+  .label {
+    margin-inline-end: var(--s-2);
+    color: var(--ink);
+    font-family: var(--font-mono);
+  }
+</style>

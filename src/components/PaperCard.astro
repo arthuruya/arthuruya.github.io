@@ -1,0 +1,212 @@
+---
+/**
+ * An expandable Paper card on native <details>, no JS (RENCANA Phase 3).
+ * Closed: title, venue, year and the role sentence (the role is always visible).
+ * Open: the full author list in DOI order with Arya's name in <strong>, the DOI
+ * link, and the abstract if present. Opening animates grid-template-rows 0fr->1fr
+ * where ::details-content is supported; reduced motion turns that off (base.css).
+ */
+import LinkArrow from './LinkArrow.astro';
+
+export interface Props {
+  title: string;
+  /** language of the title when it differs from the page (e.g. 'en' on /id/) */
+  titleLang?: string;
+  /** authors in the order the DOI record gives them */
+  authors: readonly string[];
+  /** zero-based index of Arya in `authors` */
+  selfIndex: number;
+  venue: string;
+  year: string;
+  doi: string;
+  role: string;
+  abstract?: string;
+  abstractLang?: string;
+  labels: { authors: string; abstract: string; doi: string };
+  open?: boolean;
+}
+
+const {
+  title,
+  titleLang,
+  authors,
+  selfIndex,
+  venue,
+  year,
+  doi,
+  role,
+  abstract,
+  abstractLang,
+  labels,
+  open = false,
+} = Astro.props;
+
+if (selfIndex < 0 || selfIndex >= authors.length) {
+  throw new Error(`PaperCard: selfIndex ${selfIndex} outside authors (${authors.length})`);
+}
+---
+
+<details class="paper" open={open}>
+  <summary>
+    <span class="title" lang={titleLang}>
+      {title}
+    </span>
+    <span class="meta">
+      {venue} · {year}
+    </span>
+    <span class="role">{role}</span>
+    <span class="toggle" aria-hidden="true">
+      <span class="when-closed">+</span>
+      <span class="when-open">–</span>
+    </span>
+  </summary>
+  <div class="body">
+    <div class="body-inner">
+      <p class="label">{labels.authors}</p>
+      <ol class="authors">
+        {authors.map((name, i) => (
+          <li>{i === selfIndex ? <strong>{name}</strong> : name}</li>
+        ))}
+      </ol>
+      <p>
+        <LinkArrow href={`https://doi.org/${doi}`} external>
+          <span>{labels.doi}</span> <span class="doi">{doi}</span>
+        </LinkArrow>
+      </p>
+      {abstract && (
+        <>
+          <p class="label">{labels.abstract}</p>
+          <blockquote class="abstract" lang={abstractLang}>
+            <p>{abstract}</p>
+          </blockquote>
+        </>
+      )}
+    </div>
+  </div>
+</details>
+
+<style>
+  .paper {
+    border: var(--rule) solid var(--contour);
+    border-radius: var(--radius);
+    background: var(--paper-2);
+  }
+
+  summary {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: var(--s-2) var(--s-4);
+    padding: var(--s-5);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  summary > :not(.toggle) {
+    grid-column: 1;
+  }
+
+  .title {
+    font-family: var(--font-heading);
+    font-optical-sizing: auto;
+    font-size: var(--fs-h3);
+    font-weight: 500;
+    line-height: var(--lh-heading);
+    text-wrap: balance;
+  }
+
+  .meta {
+    color: var(--ink-2);
+    font-family: var(--font-mono);
+    font-size: var(--fs-small);
+  }
+
+  .role {
+    max-width: var(--measure);
+  }
+
+  .toggle {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: start;
+    inline-size: 1.75rem;
+    block-size: 1.75rem;
+    display: grid;
+    place-items: center;
+    border: var(--rule) solid var(--ink-2);
+    border-radius: var(--radius);
+    font-family: var(--font-mono);
+    line-height: 1;
+  }
+
+  .paper[open] .when-closed,
+  .paper:not([open]) .when-open {
+    display: none;
+  }
+
+  .body-inner {
+    display: grid;
+    gap: var(--s-3);
+    padding: 0 var(--s-5) var(--s-5);
+  }
+
+  .label {
+    color: var(--ink-2);
+    font-family: var(--font-mono);
+    font-size: var(--fs-small);
+  }
+
+  .authors {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    max-width: var(--measure);
+  }
+
+  .authors li {
+    display: inline;
+  }
+
+  .authors li:not(:last-child)::after {
+    content: ', ';
+  }
+
+  .doi {
+    font-family: var(--font-mono);
+    font-size: var(--fs-mono);
+    overflow-wrap: anywhere;
+  }
+
+  .abstract {
+    margin: 0;
+    padding-inline-start: var(--s-4);
+    border-inline-start: 2px solid var(--contour);
+  }
+
+  /* Open/close transition where ::details-content exists (Chromium, Safari 18.4+). */
+  .paper::details-content {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition:
+      grid-template-rows var(--dur) var(--ease),
+      content-visibility var(--dur) allow-discrete;
+  }
+
+  .paper[open]::details-content {
+    grid-template-rows: 1fr;
+  }
+
+  .body {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  @media (forced-colors: active) {
+    .toggle {
+      border-color: ButtonText;
+    }
+  }
+</style>

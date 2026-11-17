@@ -11,4 +11,12 @@ export default defineConfig({
     // Strict CSP later forbids inline styles, so every stylesheet is a file.
     inlineStylesheets: 'never',
   },
+  vite: {
+    build: {
+      // Astro inlines small processed <script>s into the HTML by default (checked on
+      // astro 7.4.12). The Phase 8 CSP (`script-src 'self'`) forbids inline scripts,
+      // so every script and asset is emitted as a file.
+      assetsInlineLimit: 0,
+    },
+  },
 });

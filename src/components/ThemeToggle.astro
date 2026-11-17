@@ -1,0 +1,133 @@
+---
+/**
+ * Day/night chart switch. A real <button> with aria-pressed (true = night chart on)
+ * and an accessible name that states the action ("Switch to night chart").
+ * public/theme.js sets data-theme before paint; this script only reacts to clicks.
+ * Without JS there is no data-theme and the button is hidden (it could not work).
+ * Visible text names the target chart and is contained in the accessible name
+ * (WCAG 2.5.3 Label in Name).
+ */
+export interface Props {
+  labels: {
+    /** accessible name in day: "Switch to night chart" */
+    toNight: string;
+    /** accessible name in night: "Switch to day chart" */
+    toDay: string;
+    /** visible text in day: "Night chart" */
+    night: string;
+    /** visible text in night: "Day chart" */
+    day: string;
+  };
+}
+
+const { labels } = Astro.props;
+---
+
+<button
+  type="button"
+  class="theme-toggle"
+  aria-pressed="false"
+  aria-label={labels.toNight}
+  data-theme-toggle
+  data-label-to-night={labels.toNight}
+  data-label-to-day={labels.toDay}
+>
+  <svg class="glyph" viewBox="0 0 12 12" aria-hidden="true" focusable="false">
+    <circle cx="6" cy="6" r="5"></circle>
+    <path d="M6 1a5 5 0 0 1 0 10z"></path>
+  </svg>
+  <span class="when-day">{labels.night}</span>
+  <span class="when-night">{labels.day}</span>
+</button>
+
+<script>
+  type Theme = 'day' | 'night';
+  const root = document.documentElement;
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]');
+  const current = (): Theme => (root.dataset.theme === 'night' ? 'night' : 'day');
+
+  function stored(): string | null {
+    try {
+      return localStorage.getItem('theme');
+    } catch {
+      return null;
+    }
+  }
+
+  function sync(): void {
+    const night = current() === 'night';
+    for (const b of buttons) {
+      b.setAttribute('aria-pressed', String(night));
+      const name = night ? b.dataset.labelToDay : b.dataset.labelToNight;
+      if (name) b.setAttribute('aria-label', name);
+    }
+  }
+
+  function apply(theme: Theme, remember: boolean): void {
+    root.dataset.theme = theme;
+    if (remember) {
+      try {
+        localStorage.setItem('theme', theme);
+      } catch {
+        // storage can throw; the switch still works for this page view
+      }
+    }
+    sync();
+  }
+
+  for (const b of buttons) {
+    b.addEventListener('click', () => apply(current() === 'night' ? 'day' : 'night', true));
+  }
+
+  // Follow the OS setting live, but only while the visitor has not chosen.
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    const s = stored();
+    if (s !== 'day' && s !== 'night') apply(e.matches ? 'night' : 'day', false);
+  });
+
+  sync();
+</script>
+
+<style>
+  .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    min-block-size: 2.75rem; /* 44 px target */
+    padding: var(--s-1) var(--s-3);
+    border: var(--rule) solid var(--ink-2);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--ink);
+    font: inherit;
+    font-size: var(--fs-small);
+    cursor: pointer;
+  }
+
+  .theme-toggle:hover {
+    border-color: var(--ink);
+  }
+
+  .glyph {
+    inline-size: 0.9em;
+    block-size: 0.9em;
+    fill: none;
+    stroke: currentcolor;
+    stroke-width: 1.2;
+  }
+
+  .glyph path {
+    fill: currentcolor;
+    stroke: none;
+  }
+
+  :global(:root:not([data-theme])) .theme-toggle {
+    display: none;
+  }
+
+  @media (forced-colors: active) {
+    .theme-toggle {
+      border-color: ButtonText;
+    }
+  }
+</style>

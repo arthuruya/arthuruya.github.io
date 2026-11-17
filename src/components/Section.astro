@@ -1,0 +1,68 @@
+---
+/**
+ * A page section with ONE dominant accent (PLAN.md: one accent per section).
+ * The accent is exposed to children as --accent; Heading's scale bar uses it.
+ */
+import type { Accent } from './types';
+
+export interface Props {
+  id?: string;
+  accent?: Accent;
+  /** id of the heading that names this section */
+  labelledby?: string;
+  /** full-bleed: no max width, no gutter (the hero) */
+  bleed?: boolean;
+  lang?: string;
+  class?: string;
+}
+
+const { id, accent = 'none', labelledby, bleed = false, lang, class: className } = Astro.props;
+---
+
+<section
+  id={id}
+  class:list={['section', className]}
+  data-accent={accent}
+  aria-labelledby={labelledby}
+  lang={lang}
+>
+  <div class:list={['section-inner', { bleed }]}>
+    <slot />
+  </div>
+</section>
+
+<style>
+  .section {
+    --accent: var(--ink-2);
+    padding-block: var(--s-8);
+  }
+
+  .section + .section {
+    border-top: var(--rule) solid var(--contour);
+  }
+
+  .section[data-accent='red'] {
+    --accent: var(--mark-red);
+  }
+
+  .section[data-accent='green'] {
+    --accent: var(--mark-green);
+  }
+
+  .section[data-accent='yellow'] {
+    --accent: var(--mark-yellow);
+  }
+
+  .section-inner {
+    max-width: var(--content-max);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+    display: grid;
+    gap: var(--s-6);
+  }
+
+  .section-inner.bleed {
+    max-width: none;
+    padding-inline: 0;
+  }
+</style>

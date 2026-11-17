@@ -1,0 +1,27 @@
+---
+/** A short mono label for stack items and keywords. Not interactive. */
+export interface Props {
+  as?: 'span' | 'li';
+  lang?: string;
+}
+
+const { as: Tag = 'span', lang } = Astro.props;
+---
+
+<Tag class="tag" lang={lang}>
+  <slot />
+</Tag>
+
+<style>
+  .tag {
+    display: inline-block;
+    padding: 0 var(--s-2);
+    border: var(--rule) solid var(--contour);
+    border-radius: var(--radius);
+    color: var(--ink-2);
+    font-family: var(--font-mono);
+    font-size: var(--fs-small);
+    line-height: 1.7;
+    white-space: nowrap;
+  }
+</style>

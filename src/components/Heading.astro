@@ -1,0 +1,63 @@
+---
+/**
+ * h1-h3 in Newsreader, with an optional eyebrow. The eyebrow carries a small chart
+ * scale bar drawn in the section's accent (--accent from Section).
+ */
+export interface Props {
+  level: 1 | 2 | 3;
+  id?: string;
+  eyebrow?: string;
+  lang?: string;
+}
+
+const { level, id, eyebrow, lang } = Astro.props;
+const Tag = `h${level}` as 'h1' | 'h2' | 'h3';
+---
+
+<div class="heading" lang={lang}>
+  {eyebrow && (
+    <p class="eyebrow">
+      <span class="scale" aria-hidden="true" />
+      {eyebrow}
+    </p>
+  )}
+  <Tag id={id}>
+    <slot />
+  </Tag>
+</div>
+
+<style>
+  .heading {
+    display: grid;
+    gap: var(--s-2);
+  }
+
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    color: var(--ink-2);
+    font-family: var(--font-mono);
+    font-size: var(--fs-small);
+    letter-spacing: 0.02em;
+  }
+
+  /* A chart scale bar: |----|----| */
+  .scale {
+    flex: none;
+    inline-size: var(--s-7);
+    block-size: var(--s-2);
+    border: 0 solid var(--accent, var(--ink-2));
+    border-inline-width: 2px;
+    border-block-end-width: 2px;
+    position: relative;
+  }
+
+  .scale::after {
+    content: '';
+    position: absolute;
+    inset-block: 50% 0;
+    inset-inline-start: 50%;
+    border-inline-start: 2px solid var(--accent, var(--ink-2));
+  }
+</style>

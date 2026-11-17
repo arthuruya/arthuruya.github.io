@@ -1,0 +1,42 @@
+---
+/** A plain container. Raised = --paper-2 fill; outline = a 1 px rule, no fill. */
+export interface Props {
+  as?: 'article' | 'div' | 'li' | 'section';
+  surface?: 'raised' | 'outline';
+  labelledby?: string;
+  lang?: string;
+  class?: string;
+}
+
+const { as: Tag = 'article', surface = 'raised', labelledby, lang, class: className } = Astro.props;
+---
+
+<Tag
+  class:list={['card', className]}
+  data-surface={surface}
+  aria-labelledby={labelledby}
+  lang={lang}
+>
+  <slot />
+</Tag>
+
+<style>
+  .card {
+    display: grid;
+    gap: var(--s-4);
+    align-content: start;
+    padding: var(--s-5);
+    border: var(--rule) solid var(--contour);
+    border-radius: var(--radius);
+  }
+
+  .card[data-surface='raised'] {
+    background: var(--paper-2);
+  }
+
+  @media (min-width: 48rem) {
+    .card {
+      padding: var(--s-6);
+    }
+  }
+</style>

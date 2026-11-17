@@ -1,0 +1,54 @@
+---
+/**
+ * Status as dot + text, never colour alone. Red = boundary/attention,
+ * green = OK/running, yellow = key marker ("Next").
+ */
+import type { Mark } from './types';
+
+export interface Props {
+  kind: Mark;
+  label: string;
+  as?: 'span' | 'p' | 'li';
+  lang?: string;
+}
+
+const { kind, label, as: Tag = 'span', lang } = Astro.props;
+---
+
+<Tag class="navmark" data-kind={kind} lang={lang}>
+  <svg class="dot" viewBox="0 0 10 10" aria-hidden="true" focusable="false">
+    <circle cx="5" cy="5" r="4.5"></circle>
+  </svg>
+  <span class="label">{label}</span>
+</Tag>
+
+<style>
+  .navmark {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.5em;
+    max-width: var(--measure);
+  }
+
+  .dot {
+    flex: none;
+    inline-size: 0.6em;
+    block-size: 0.6em;
+    /* sit on the x-height of the first line */
+    transform: translateY(-0.02em);
+    fill: currentcolor;
+    forced-color-adjust: auto;
+  }
+
+  .navmark[data-kind='red'] .dot {
+    color: var(--mark-red);
+  }
+
+  .navmark[data-kind='green'] .dot {
+    color: var(--mark-green);
+  }
+
+  .navmark[data-kind='yellow'] .dot {
+    color: var(--mark-yellow);
+  }
+</style>
