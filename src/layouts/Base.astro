@@ -1,0 +1,36 @@
+---
+/**
+ * Document shell: <html lang>, meta, theme bootstrap and the global stylesheets.
+ * Every string comes from the caller (RENCANA rule 9). Phase 2/3/8 extend the head
+ * (hreflang, canonical, theme-color, CSP); keep it free of inline scripts and styles.
+ */
+import '../styles/fonts.css';
+import '../styles/tokens.css';
+import '../styles/base.css';
+
+export interface Props {
+  lang: 'en' | 'id';
+  title: string;
+  description: string;
+  noindex?: boolean;
+}
+
+const { lang, title, description, noindex = false } = Astro.props;
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Sets data-theme before first paint: external, synchronous, no defer/async. -->
+    <script is:inline src="/theme.js"></script>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <title>{title}</title>
+    <slot name="head" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
