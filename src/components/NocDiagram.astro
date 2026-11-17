@@ -1,0 +1,401 @@
+---
+/**
+ * NOC dependency diagram (RENCANA Phase 5). One failure upstream raises one alarm because
+ * the checks downstream of it are suppressed.
+ *
+ * Without JS it is a static figure: the build runs `computeAlarms` on the example failure
+ * and draws the result, with a caption. With JS the nodes become buttons, a switch shows
+ * the count without dependencies, and a live region reads out each change. The graph is
+ * generic (src/content/diagrams/noc.json): no real host, address, site name or count.
+ */
+import nocRaw from '../content/diagrams/noc.json';
+import { computeAlarms, nodeStates, parseGraph } from '../lib/noc.ts';
+import { layoutGraph } from '../lib/noc-layout.ts';
+import type { Lang } from './types.ts';
+import type { Dictionary } from '../i18n/shape.ts';
+
+export interface Props {
+  lang: Lang;
+  strings: Dictionary['noc'];
+}
+
+const { lang, strings } = Astro.props;
+
+const graph = parseGraph(nocRaw);
+const labelOf = new Map(nocRaw.nodes.map((n) => [n.id, n.label[lang]]));
+const label = (id: string) => labelOf.get(id) ?? id;
+const example = nocRaw.example;
+
+const W = 132;
+const H = 56;
+const GAP_X = 44;
+const GAP_Y = 36;
+const PAD = 6;
+const { places, cols, rows } = layoutGraph(graph);
+const width = cols * W + (cols - 1) * GAP_X + 2 * PAD;
+const height = (rows - 1) * (H + GAP_Y) + H + 2 * PAD;
+const at = (id: string) => {
+  const p = places.get(id)!;
+  return { x: PAD + p.col * (W + GAP_X), y: PAD + p.row * (H + GAP_Y) };
+};
+
+const states = nodeStates(graph, example, false);
+const { alarms, suppressed } = computeAlarms(graph, example);
+const statusText = {
+  ok: strings.statusOk,
+  alarm: strings.statusAlarm,
+  suppressed: strings.statusSuppressed,
+};
+
+const edges = nocRaw.nodes.flatMap((n) =>
+  n.dependsOn.map((from) => {
+    const a = at(from);
+    const b = at(n.id);
+    const x1 = a.x + W;
+    const y1 = a.y + H / 2;
+    const x2 = b.x;
+    const y2 = b.y + H / 2;
+    const mid = (x1 + x2) / 2;
+    return { from, to: n.id, d: `M ${x1} ${y1} C ${mid} ${y1}, ${mid} ${y2}, ${x2} ${y2}` };
+  }),
+);
+
+const caption = strings.captionStatic
+  .replace('{node}', alarms.map(label).join(', '))
+  .replace('{count}', String(suppressed.length));
+
+// Everything the client script needs, so no sentence is hard-coded in code (RENCANA rule 9).
+const config = JSON.stringify({
+  nodes: nocRaw.nodes.map((n) => ({ id: n.id, dependsOn: n.dependsOn })),
+  labels: Object.fromEntries(labelOf),
+  example,
+  status: statusText,
+  summary: strings.summary,
+  groupLabel: strings.label,
+});
+---
+
+<figure class="noc" lang={lang}>
+  <div class="media" data-noc data-config={config}>
+    <div class="scroll" role="region" aria-label={strings.scrollLabel} tabindex="0" data-scroll>
+      <svg
+        class="graph"
+        viewBox={`0 0 ${width} ${height}`}
+        width={width}
+        height={height}
+        role="img"
+        aria-label={strings.label}
+        data-graph
+      >
+        {edges.map((e) => (
+          <path class="edge" d={e.d} data-from={e.from} data-to={e.to} />
+        ))}
+        {nocRaw.nodes.map((n) => {
+          const p = at(n.id);
+          const state = states.get(n.id) ?? 'ok';
+          const down = example.includes(n.id);
+          return (
+            <g class="node" data-node={n.id} data-state={state} data-down={String(down)}>
+              <rect class="focus" x={p.x - 4} y={p.y - 4} width={W + 8} height={H + 8} rx="2" />
+              <rect class="box" x={p.x} y={p.y} width={W} height={H} rx="2" />
+              <text class="name" x={p.x + 12} y={p.y + 23}>
+                {label(n.id)}
+              </text>
+              <circle class="dot" cx={p.x + 17} cy={p.y + 40} r="4.5" />
+              <text class="status" x={p.x + 29} y={p.y + 44} data-status>
+                {statusText[state]}
+              </text>
+            </g>
+          );
+        })}
+      </svg>
+    </div>
+
+    <div class="controls" data-controls hidden>
+      <div class="row">
+        <label class="switch">
+          <input type="checkbox" role="switch" data-naive />
+          <span>{strings.switchLabel}</span>
+        </label>
+        <p class="counter">
+          {strings.alarmsCount}: <output data-count>{alarms.length}</output>
+        </p>
+        <button type="button" class="reset" data-reset>
+          {strings.reset}
+        </button>
+      </div>
+      <p class="hint">{strings.hint}</p>
+      <p class="summary" role="status" aria-live="polite" data-summary></p>
+    </div>
+  </div>
+  <figcaption class="caption" data-caption>
+    {caption}
+  </figcaption>
+</figure>
+
+<script>
+  import {
+    computeAlarms,
+    computeNaiveAlarms,
+    describe,
+    nodeStates,
+    parseGraph,
+    type SummaryStrings,
+  } from '../lib/noc.ts';
+
+  interface Config {
+    nodes: { id: string; dependsOn: string[] }[];
+    labels: Record<string, string>;
+    example: string[];
+    status: { ok: string; alarm: string; suppressed: string };
+    summary: SummaryStrings;
+    groupLabel: string;
+  }
+
+  function init(root: HTMLElement): void {
+    const config = JSON.parse(root.dataset.config ?? '') as Config;
+    const graph = parseGraph({ nodes: config.nodes });
+    const svg = root.querySelector<SVGSVGElement>('[data-graph]')!;
+    const scroll = root.querySelector<HTMLElement>('[data-scroll]')!;
+    const controls = root.querySelector<HTMLElement>('[data-controls]')!;
+    const naiveBox = root.querySelector<HTMLInputElement>('[data-naive]')!;
+    const count = root.querySelector<HTMLOutputElement>('[data-count]')!;
+    const summary = root.querySelector<HTMLElement>('[data-summary]')!;
+    const reset = root.querySelector<HTMLButtonElement>('[data-reset]')!;
+    const caption = root.parentElement?.querySelector<HTMLElement>('[data-caption]');
+    const nodes = new Map(
+      [...svg.querySelectorAll<SVGGElement>('[data-node]')].map((g) => [g.dataset.node!, g]),
+    );
+
+    const down = new Set<string>(config.example);
+    const labelOf = (id: string) => config.labels[id] ?? id;
+
+    const render = (announce: boolean): void => {
+      const naive = naiveBox.checked;
+      const states = nodeStates(graph, down, naive);
+      for (const [id, g] of nodes) {
+        const state = states.get(id) ?? 'ok';
+        const text = config.status[state];
+        g.dataset.state = state;
+        g.dataset.down = String(down.has(id));
+        g.setAttribute('aria-pressed', String(down.has(id)));
+        g.setAttribute('aria-label', `${labelOf(id)}: ${text}`);
+        g.querySelector('[data-status]')!.textContent = text;
+      }
+      const result = naive
+        ? { alarms: computeNaiveAlarms(graph, down), suppressed: [] as string[] }
+        : computeAlarms(graph, down);
+      count.textContent = String(result.alarms.length);
+      // The first render only sets the state; the live region speaks after a change.
+      summary.textContent = announce ? describe(config.summary, labelOf, result, naive) : '';
+    };
+
+    const toggle = (id: string): void => {
+      if (down.has(id)) down.delete(id);
+      else down.add(id);
+      render(true);
+    };
+
+    // upgrade the static figure: the group becomes a set of toggle buttons
+    svg.setAttribute('role', 'group');
+    svg.setAttribute('aria-label', config.groupLabel);
+    scroll.removeAttribute('role');
+    scroll.removeAttribute('aria-label');
+    scroll.removeAttribute('tabindex');
+    for (const [id, g] of nodes) {
+      g.setAttribute('role', 'button');
+      g.setAttribute('tabindex', '0');
+      g.addEventListener('click', () => toggle(id));
+      g.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault(); // Space must not scroll the page
+          toggle(id);
+        }
+      });
+    }
+    naiveBox.addEventListener('change', () => render(true));
+    reset.addEventListener('click', () => {
+      down.clear();
+      naiveBox.checked = false;
+      render(true);
+    });
+
+    controls.hidden = false;
+    if (caption) caption.hidden = true;
+    root.dataset.live = '';
+    render(false);
+  }
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-noc]')) init(root);
+</script>
+
+<style>
+  .noc {
+    display: grid;
+    gap: var(--s-3);
+    margin: 0;
+  }
+
+  .media {
+    border: var(--rule) solid var(--contour);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .scroll {
+    overflow-x: auto;
+    padding: var(--s-4);
+    background: var(--paper);
+  }
+
+  .graph {
+    display: block;
+    /* keeps the labels legible on a phone: the figure scrolls sideways instead of shrinking */
+    inline-size: max(100%, 40rem);
+    block-size: auto;
+    max-inline-size: none;
+  }
+
+  .edge {
+    fill: none;
+    stroke: var(--ink-2);
+    stroke-width: 1.5;
+  }
+
+  .box {
+    fill: var(--paper-2);
+    stroke: var(--ink-2);
+    stroke-width: 1;
+  }
+
+  .name {
+    fill: var(--ink);
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .status {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    fill: var(--ink-2);
+  }
+
+  .dot {
+    fill: none;
+    stroke: var(--ink-2);
+    stroke-width: 1.5;
+  }
+
+  .focus {
+    fill: none;
+    stroke: none;
+  }
+
+  .node[data-state='ok'] .status {
+    fill: var(--mark-green);
+  }
+  .node[data-state='ok'] .dot {
+    fill: var(--mark-green);
+    stroke: var(--mark-green);
+  }
+
+  .node[data-state='alarm'] .box {
+    stroke: var(--mark-red);
+    stroke-width: 2.5;
+  }
+  .node[data-state='alarm'] .status {
+    fill: var(--mark-red);
+    font-weight: 600;
+  }
+  .node[data-state='alarm'] .dot {
+    fill: var(--mark-red);
+    stroke: var(--mark-red);
+  }
+
+  /* suppressed: muted text, a hollow dot and a dashed border (shape, not only colour) */
+  .node[data-state='suppressed'] .box {
+    stroke-dasharray: 5 4;
+  }
+
+  /* a node you marked failed keeps a heavier border even when it is suppressed */
+  .node[data-down='true'] .box {
+    stroke-width: 2.5;
+  }
+
+  [data-live] .node {
+    cursor: pointer;
+  }
+  .node:focus {
+    outline: none;
+  }
+  .node:focus-visible .focus {
+    stroke: var(--mark-yellow);
+    stroke-width: 3;
+  }
+
+  .controls {
+    display: grid;
+    gap: var(--s-3);
+    padding: var(--s-4);
+    border-block-start: var(--rule) solid var(--contour);
+  }
+  .controls[hidden] {
+    display: none;
+  }
+
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-3) var(--s-5);
+  }
+
+  .switch {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    min-block-size: 2.75rem;
+  }
+  .switch input {
+    inline-size: 1.25rem;
+    block-size: 1.25rem;
+    accent-color: var(--ink-2);
+  }
+
+  .counter {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: var(--fs-mono);
+  }
+
+  .reset {
+    min-block-size: 2.75rem;
+    padding-inline: var(--s-4);
+    border: var(--rule) solid var(--ink-2);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--ink);
+    font: inherit;
+  }
+
+  .hint {
+    margin: 0;
+    color: var(--ink-2);
+    font-size: var(--fs-small);
+  }
+
+  .summary {
+    margin: 0;
+    min-block-size: 1.65em;
+  }
+
+  .caption {
+    max-inline-size: var(--measure);
+    color: var(--ink-2);
+    font-size: var(--fs-small);
+  }
+  .caption[hidden] {
+    display: none;
+  }
+</style>
