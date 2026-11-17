@@ -14,8 +14,8 @@ facts:
   - { label: Dashboard pages, value: '3', source: '3.1' }
 sections:
   problem:
-    - 'The station runs several switches, more than a dozen access points, routers, servers and observation equipment, spread over many locations. There was no single screen that showed whether all of it was working.'
-    - 'The observation equipment (Aloptama, in BMKG terms) adds automatic weather stations, a maritime weather station and a weather display at the port. Alerts by email did not help much, because the technicians rarely read their email.'
+    - 'The station runs several switches, between ten and twenty access points, routers, servers and observation equipment, spread over many locations. There was no single screen that showed whether all of it was working.'
+    - 'The observation equipment (Aloptama) adds automatic weather stations, a maritime weather station and a weather display at the port. Alerts by email did not help much, because the technicians rarely read their email.'
   constraints:
     - 'A paid product was out.'
     - 'The maritime weather station feeds an Elasticsearch index run by a central unit, and its vendor path had to stay untouched.'

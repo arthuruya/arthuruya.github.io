@@ -18,7 +18,7 @@ sections:
     - 'When I started on it in 2022, the app was built with Ionic.'
   constraints:
     - 'Two platforms, Android and iOS.'
-    - 'Every screen in two languages, Indonesian and English, and in a light and a dark theme.'
+    - 'Two languages, Indonesian and English, and a light and a dark theme.'
     - 'Earthquake and weather notifications go out automatically. Nobody presses a button to send them.'
     - 'Some people search by voice or listen through text-to-speech instead of reading the screen.'
   decision:
