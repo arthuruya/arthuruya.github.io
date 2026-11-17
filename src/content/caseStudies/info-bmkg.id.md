@@ -6,9 +6,34 @@ title: Info BMKG
 dek: 'Aplikasi seluler resmi BMKG untuk informasi cuaca, gempa dan peringatan dini, di Android dan iOS.'
 role: Lead developer (Flutter)
 period: 2022–sekarang
-stack: [Flutter, Dart, GetX, Dio, Hive, Firebase]
+stack: [Flutter, Dart, GetX, Dio, Hive, Firebase, flutter_map, Syncfusion Charts, FVM]
 facts:
   - { label: Unduhan, value: 12M+, source: '2.1' }
   - { label: Platform, value: Android dan iOS, source: '2.1' }
   - { label: Bahasa, value: Indonesia dan Inggris, source: '2.1' }
+sections:
+  problem:
+    - 'Info BMKG membawa informasi publik BMKG ke ponsel: prakiraan cuaca sampai tingkat kecamatan dan kelurahan, gempa dan peringatan tsunami saat itu juga, animasi radar dan satelit, cuaca penerbangan dan maritim, kualitas udara, serta peringatan dini cuaca ekstrem.'
+    # TODO(arya): apa yang kurang atau bermasalah pada versi Ionic sehingga pindah ke Flutter layak dikerjakan? Satu atau dua kalimat. Halaman hanya boleh menyebut apa yang Arya tulis di sini.
+    - 'Saat saya mulai memegangnya pada 2022, aplikasi ini dibangun dengan Ionic.'
+  constraints:
+    - 'Dua platform, Android dan iOS.'
+    - 'Setiap layar dalam dua bahasa, Indonesia dan Inggris, dengan tema terang dan gelap.'
+    - 'Notifikasi gempa dan cuaca terkirim otomatis. Tidak ada orang yang menekan tombol untuk mengirimnya.'
+    - 'Sebagian pengguna mencari dengan suara atau mendengarkan lewat text-to-speech, bukan membaca layar.'
+  decision:
+    # TODO(arya): kenapa Flutter, bukan tetap di Ionic (atau pilihan lain yang sempat dilihat)? Rencana meminta satu alternatif yang ditolak beserta alasan sebenarnya.
+    - 'Saya memindahkan aplikasi dari Ionic ke Flutter. Tampilannya jadi lebih segar dan modern, dan aplikasi kini menjangkau pengguna Android dan iOS.'
+    - 'State diatur GetX, panggilan jaringan lewat Dio, dan Hive menyimpan data di ponsel. Firebase menangani push notification, analitik, remote config dan Firestore. Peta memakai flutter_map dan Google Maps, grafik memakai Syncfusion, dan FVM mengunci versi Flutter supaya setiap build memakai versi yang sama.'
+    - 'Setiap rilis diberi tag dan nomor versi. Sekarang aplikasi ada di versi 3.5.'
+  result:
+    - 'Info BMKG sudah diunduh lebih dari 12 juta kali.'
+    - 'Ada tiga bagian kecil di sekitar aplikasi. Data Feed API berbasis Laravel dan MySQL menyediakan data wilayah Indonesia, prakiraan berdasarkan koordinat, dan endpoint bahaya. Dashboard App Health dan Survei Publik ada di Karya lainnya di halaman utama. Landing page-nya satu file statis, dwibahasa, tanpa framework dan tanpa build.'
+links:
+  - label: Info BMKG di Google Play
+    href: 'https://play.google.com/store/apps/details?id=com.Info_BMKG'
+  - label: Info BMKG di App Store
+    href: 'https://apps.apple.com/id/app/info-bmkg/id1114372539'
+  - label: Dashboard App Health dan Survei Publik, di Karya lainnya
+    href: '/id/#builds-h'
 ---

@@ -57,6 +57,13 @@ export interface Dictionary {
     read: string;
     backHome: string;
     next: string;
+    /** section headings on a case-study page (Phase 6, DRAFT) */
+    problem: string;
+    constraints: string;
+    decision: string;
+    result: string;
+    change: string;
+    links: string;
   };
   /** the NOC dependency diagram on the monitoring-noc case study (DRAFT) */
   noc: {

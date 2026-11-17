@@ -30,6 +30,9 @@ const fact = z.object({
   source: z.string().regex(/^\d+(\.\d+)?$/, 'source must be a section number like "9" or "3.1"'),
 });
 
+/** One or more paragraphs of plain text. */
+const paragraphs = z.array(z.string().min(1)).min(1);
+
 const papers = defineCollection({
   loader: base('papers'),
   schema: z
@@ -97,19 +100,27 @@ const caseStudies = defineCollection({
     /** 3 to 5; every `source` is checked by `check:facts` */
     facts: z.array(fact).min(3).max(5),
     /**
-     * Phase 6 writes these (problem, constraints, decision, result, change). Until then
-     * the pages show dek, role, period, stack and facts only.
+     * The case-study body (Phase 6), one string per paragraph. `constraints` renders as a
+     * list. `change` is optional: it is left out when the source gives no basis for it.
+     * Every number in this prose must appear in a section that one of `facts` cites
+     * (`check:facts`); banned words and the 700-word limit are `check:copy`.
      */
-    sections: z
-      .object({
-        problem: z.string(),
-        constraints: z.string(),
-        decision: z.string(),
-        result: z.string(),
-        change: z.string(),
-      })
-      .partial()
-      .default({}),
+    sections: z.object({
+      problem: paragraphs,
+      constraints: paragraphs,
+      decision: paragraphs,
+      result: paragraphs,
+      change: paragraphs.optional(),
+    }),
+    /** public links only: store pages, or a path on this site */
+    links: z
+      .array(
+        z.object({
+          label: z.string().min(1),
+          href: z.string().regex(/^(https:\/\/|\/)/, 'href must be https:// or a site path'),
+        }),
+      )
+      .default([]),
   }),
 });
 
