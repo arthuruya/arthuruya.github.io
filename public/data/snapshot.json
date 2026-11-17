@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "synthetic": false,
+  "source": "BMKG InaCAWO Flows, surface layer",
+  "bbox": {
+    "lon0": 116.0,
+    "lon1": 123.0,
+    "lat0": -8.0,
+    "lat1": 2.0
+  },
+  "dlon": 0.1,
+  "dlat": 0.1,
+  "nx": 71,
+  "ny": 101,
+  "steps": 48,
+  "dtSeconds": 3600,
+  "t0": "2026-10-29T00:00:00Z",
+  "units": "cm/s",
+  "convention": "toward",
+  "scale": 1,
+  "fill": -32768
+}

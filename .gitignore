@@ -32,11 +32,6 @@ snapshot.raw*
 .vscode/
 .vitest/
 
-# Phase 4: the SYNTHETIC dev snapshot must never be committed. When Arya's real snapshot
-# arrives (RENCANA F1), delete these two lines and commit it (docs/snapshot-spec.md).
-public/data/snapshot.json
-public/data/snapshot.bin
-
 # Playwright output
 test-results/
 playwright-report/
