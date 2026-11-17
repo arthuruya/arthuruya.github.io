@@ -48,6 +48,12 @@ Two explicit route trees: `/` and `/id/`; slugs are identical. Content lives in
 `src/content.config.ts`); interface strings in `src/i18n/en.ts` and `id.ts`. Routes:
 `src/lib/routes.ts`. Missing facts are `TODO(arya): ...` in the file.
 
+Four case studies, each at `/work/<slug>/` and `/id/work/<slug>/`: `info-bmkg`,
+`monitoring-noc`, `station-vpn`, `untia-net`. Adding one means a slug in
+`CASE_STUDY_SLUGS` (`src/lib/routes.ts`), the same slug in the `caseStudies` schema, both
+language files, and `npm run urls:write`. Other builds (`src/content/builds/`) are cards on
+the home page only, with no page of their own.
+
 `public/lang.js` runs only on `/` (Indonesian browser or saved choice goes to `/id/`);
 `public/lang-switch.js` runs everywhere and remembers a manual switch.
 `scripts/context-sections.json` is generated from the context document that stays

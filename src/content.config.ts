@@ -89,7 +89,7 @@ const caseStudies = defineCollection({
   loader: base('caseStudies'),
   schema: z.object({
     lang,
-    slug: z.enum(['info-bmkg', 'monitoring-noc', 'station-vpn']),
+    slug: z.enum(['info-bmkg', 'monitoring-noc', 'station-vpn', 'untia-net']),
     order: z.number().int(),
     title: z.string().min(1),
     /** one sentence */
