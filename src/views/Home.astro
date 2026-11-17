@@ -1,20 +1,26 @@
 ---
 /**
- * Phase 2 home view: every section built from the content collections, plainly.
- * Phase 3 replaces the markup with the real layout; the data flow stays. Used by
- * src/pages/index.astro (en) and src/pages/id/index.astro (id): two explicit route trees.
+ * The home page (RENCANA Phase 3): header, hero, Papers, Work, How I work, About,
+ * Contact, colophon. Every string comes from the content collections or the dictionary.
+ * Used by src/pages/index.astro (en) and src/pages/id/index.astro (id): two explicit
+ * route trees.
  */
+import { Picture } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Card from '../components/Card.astro';
 import Heading from '../components/Heading.astro';
-import LangSwitch from '../components/LangSwitch.astro';
+import HeroChart from '../components/HeroChart.astro';
 import LinkArrow from '../components/LinkArrow.astro';
 import NavMark from '../components/NavMark.astro';
 import PaperCard from '../components/PaperCard.astro';
 import Section from '../components/Section.astro';
+import SiteHeader from '../components/SiteHeader.astro';
 import SkipLink from '../components/SkipLink.astro';
-import ThemeToggle from '../components/ThemeToggle.astro';
+import Stat from '../components/Stat.astro';
+import Tag from '../components/Tag.astro';
 import type { Lang } from '../components/types';
+import portrait from '../assets/portrait.png';
+import { SOURCE_URL } from '../config/site.ts';
 import { t } from '../i18n/index.ts';
 import {
   getBuilds,
@@ -42,6 +48,14 @@ const [papers, skripsi, cases, builds, principles] = await Promise.all([
   getPrinciples(lang),
 ]);
 const year = (date: Date) => String(date.getUTCFullYear());
+const builtOn = new Intl.DateTimeFormat(lang === 'id' ? 'id-ID' : 'en-GB', {
+  dateStyle: 'long',
+  timeZone: 'UTC',
+}).format(new Date());
+const cvLinks = [
+  { href: site.contact.cv.id, label: site.contact.labels.cvId, lang: 'id' },
+  { href: site.contact.cv.en, label: site.contact.labels.cvEn, lang: 'en' },
+].filter((cv): cv is { href: string; label: string; lang: string } => Boolean(cv.href));
 ---
 
 <Base
@@ -51,149 +65,200 @@ const year = (date: Date) => String(date.getUTCFullYear());
   alternates={{ en: homePath('en'), id: homePath('id') }}
   langRedirect={lang === 'en'}
 >
+  <Fragment slot="head">
+    <script is:inline src="/contact.js" defer></script>
+  </Fragment>
+
   <SkipLink label={d.skipLink} />
 
-  <header class="bar" id="top">
-    <a class="name" href={homePath(lang)}>
-      {site.name}
-    </a>
-    <nav aria-label={d.aria.mainNav}>
-      <ul>
-        <li>
-          <a href="#papers">{site.nav.papers}</a>
-        </li>
-        <li>
-          <a href="#work">{site.nav.work}</a>
-        </li>
-        <li>
-          <a href="#about">{site.nav.about}</a>
-        </li>
-        <li>
-          <a href="#contact">{site.nav.contact}</a>
-        </li>
-      </ul>
-    </nav>
-    <LangSwitch href={homePath(other)} hreflang={other} label={d.langSwitch.label} />
-    <ThemeToggle labels={d.theme} />
-  </header>
+  <SiteHeader
+    name={site.name}
+    homeHref={homePath(lang)}
+    nav={[
+      { href: '#papers', label: site.nav.papers },
+      { href: '#work', label: site.nav.work },
+      { href: '#about', label: site.nav.about },
+      { href: '#contact', label: site.nav.contact },
+    ]}
+    menuLabel={d.menu}
+    navLabel={d.aria.mainNav}
+    lang={{ href: homePath(other), hreflang: other, label: d.langSwitch.label }}
+    theme={d.theme}
+  />
 
   <main id="main">
-    <Section accent="yellow" labelledby="hero">
-      <Heading level={1} id="hero">
-        {site.name}
-      </Heading>
-      <p>{site.hero.tagline}</p>
-      <NavMark kind="yellow" label={site.hero.next} as="p" />
-    </Section>
-
-    <Section id="papers" labelledby="papers-h">
-      <Heading level={2} id="papers-h">
-        {site.papers.heading}
-      </Heading>
-      <p>{site.papers.lead}</p>
-      {papers.map((p) => (
-        <PaperCard
-          title={p.title}
-          titleLang="en"
-          authors={p.authors}
-          selfIndex={p.selfIndex}
-          venue={p.venue}
-          year={year(p.published)}
-          doi={p.doi}
-          role={p.role}
-          abstract={p.abstract}
-          abstractLang="en"
-          labels={d.paper}
+    <Section accent="yellow" labelledby="hero-h" class="hero">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <Heading level={1} id="hero-h">
+            {site.name}
+          </Heading>
+          <p class="tagline">{site.hero.tagline}</p>
+          <NavMark kind="yellow" label={site.hero.next} as="p" />
+        </div>
+        <HeroChart
+          label={d.hero.chartLabel}
+          untia={d.hero.markerUntia}
+          strait={d.hero.markerStrait}
         />
-      ))}
-      <Heading level={3}>{site.papers.skripsiHeading}</Heading>
-      {skripsi.map((s) => (
-        <Card>
-          <p lang="id">{s.title}</p>
-          {s.summary && <p>{s.summary}</p>}
-          {s.role && <p>{s.role}</p>}
-          <p class="mono">
-            {s.author} · {d.skripsi.advisor}: {s.advisor} · {s.institution} · {s.year} · {s.pages}{' '}
-            {d.skripsi.pages}
-          </p>
-          <LinkArrow href={s.libraryUrl} external>
-            {d.skripsi.library}
-          </LinkArrow>
-        </Card>
-      ))}
+      </div>
     </Section>
 
-    <Section id="work" labelledby="work-h">
+    <Section id="papers" accent="none" labelledby="papers-h">
+      <Heading level={2} id="papers-h" eyebrow={site.papers.heading}>
+        {site.papers.lead}
+      </Heading>
+      <div class="stack">
+        {papers.map((p) => (
+          <PaperCard
+            title={p.title}
+            titleLang="en"
+            authors={p.authors}
+            selfIndex={p.selfIndex}
+            venue={p.venue}
+            year={year(p.published)}
+            doi={p.doi}
+            role={p.role}
+            abstract={p.abstract}
+            abstractLang="en"
+            labels={d.paper}
+          />
+        ))}
+      </div>
+      <Heading level={3} id="skripsi-h">
+        {site.papers.skripsiHeading}
+      </Heading>
+      <div class="stack">
+        {skripsi.map((s, i) => (
+          <Card labelledby={`skripsi-${i}`}>
+            <p class="skripsi-title" id={`skripsi-${i}`} lang="id">
+              {s.title}
+            </p>
+            {s.summary && <p>{s.summary}</p>}
+            {s.role && <p>{s.role}</p>}
+            <p class="mono">
+              {d.skripsi.author}: {s.author} · {d.skripsi.advisor}: {s.advisor} · {s.institution} ·{' '}
+              {s.year} · {s.pages} {d.skripsi.pages}
+            </p>
+            <p>
+              <LinkArrow href={s.libraryUrl} external>
+                {d.skripsi.library}
+              </LinkArrow>
+            </p>
+          </Card>
+        ))}
+      </div>
+    </Section>
+
+    <Section id="work" accent="green" labelledby="work-h">
       <Heading level={2} id="work-h">
         {site.work.heading}
       </Heading>
-      {cases.map((c) => (
-        <Card>
-          <Heading level={3}>{c.title}</Heading>
-          <p>{c.dek}</p>
-          <p class="mono">
-            {c.role} · {c.period}
-          </p>
-          <ul class="inline">
-            {c.facts.map((f) => (
-              <li>
-                <span class="mono">{f.value}</span> <span>{f.label}</span>
-              </li>
-            ))}
-          </ul>
-          <LinkArrow href={workPath(lang, c.slug)}>{d.caseStudy.read}</LinkArrow>
-        </Card>
-      ))}
-      <Heading level={3}>{site.work.otherBuilds}</Heading>
-      <ul class="grid">
-        {builds.map((b) => (
-          <Card as="li">
-            <p>
-              <strong>{b.name}</strong>
+      <div class="stack">
+        {cases.map((c) => (
+          <Card labelledby={`case-${c.slug}`}>
+            <Heading level={3} id={`case-${c.slug}`}>
+              {c.title}
+            </Heading>
+            <p>{c.dek}</p>
+            <p class="mono">
+              {c.role} · {c.period}
             </p>
+            <div class="facts">
+              {c.facts.map((f) => (
+                <Stat value={f.value} label={f.label} source={f.source} />
+              ))}
+            </div>
+            <p>
+              <LinkArrow href={workPath(lang, c.slug)}>{d.caseStudy.read}</LinkArrow>
+            </p>
+          </Card>
+        ))}
+      </div>
+
+      <Heading level={3} id="builds-h">
+        {site.work.otherBuilds}
+      </Heading>
+      <ul class="builds" aria-labelledby="builds-h">
+        {builds.map((b) => (
+          <Card as="li" surface="outline">
+            <p class="build-name">{b.name}</p>
             <p>{b.blurb}</p>
-            <p class="mono">{b.stack.join(' · ')}</p>
+            <ul class="tags">
+              {b.stack.map((s) => (
+                <Tag as="li">{s}</Tag>
+              ))}
+            </ul>
             {b.link && (
-              <LinkArrow href={b.link} external>
-                {b.name}
-              </LinkArrow>
+              <p>
+                <LinkArrow href={b.link} external>
+                  {b.name}
+                </LinkArrow>
+              </p>
             )}
           </Card>
         ))}
       </ul>
-      <p>{site.work.earlier}</p>
+      <p class="earlier">{site.work.earlier}</p>
     </Section>
 
-    <Section labelledby="approach-h">
+    <Section accent="none" labelledby="approach-h">
       <Heading level={2} id="approach-h">
         {site.approach.heading}
       </Heading>
-      <ol>
+      <ol class="principles">
         {principles.map((p) => (
           <li>
-            <strong>{p.title}</strong>
-            <span>{p.body}</span>
+            <h3 class="principle-title">{p.title}</h3>
+            <p>{p.body}</p>
           </li>
         ))}
       </ol>
     </Section>
 
-    <Section id="about" labelledby="about-h">
+    <Section id="about" accent="none" labelledby="about-h">
       <Heading level={2} id="about-h">
         {site.about.heading}
       </Heading>
-      {site.about.paragraphs.map((p) => (
-        <p>{p}</p>
-      ))}
+      <div class="about">
+        <div class="photo">
+          <Picture
+            src={portrait}
+            alt={site.about.photoAlt}
+            formats={['avif', 'webp']}
+            fallbackFormat="png"
+            widths={[240, 360]}
+            sizes="240px"
+            width={240}
+            height={338}
+            decoding="async"
+            loading="lazy"
+          />
+        </div>
+        <div class="prose">
+          {site.about.paragraphs.map((p) => (
+            <p>{p}</p>
+          ))}
+        </div>
+      </div>
     </Section>
 
-    <Section id="contact" labelledby="contact-h">
+    <Section id="contact" accent="red" labelledby="contact-h">
       <Heading level={2} id="contact-h">
         {site.contact.heading}
       </Heading>
       <p>{site.contact.lead}</p>
-      <ul>
-        <li>{site.contact.emailFallback}</li>
+      <ul class="contact">
+        <li>
+          <span
+            data-email
+            data-user={site.contact.email.user}
+            data-domain={site.contact.email.domain}
+            data-label={site.contact.labels.email}
+          >
+            {site.contact.emailFallback}
+          </span>
+        </li>
         <li>
           <LinkArrow href={site.contact.links.linkedin} external>
             {site.contact.labels.linkedin}
@@ -209,64 +274,186 @@ const year = (date: Date) => String(date.getUTCFullYear());
             {site.contact.labels.orcid}
           </LinkArrow>
         </li>
-        {site.contact.cv.id && (
+        {cvLinks.map((cv) => (
           <li>
-            <LinkArrow href={site.contact.cv.id}>{site.contact.labels.cvId}</LinkArrow>
+            <LinkArrow href={cv.href} lang={cv.lang}>
+              {cv.label}
+            </LinkArrow>
           </li>
-        )}
-        {site.contact.cv.en && (
-          <li>
-            <LinkArrow href={site.contact.cv.en}>{site.contact.labels.cvEn}</LinkArrow>
-          </li>
-        )}
+        ))}
       </ul>
     </Section>
   </main>
 
   <footer class="foot">
-    <p>{site.colophon.cookies}</p>
-    <a href="#top">{d.backToTop}</a>
+    <div class="foot-inner">
+      <p>{site.colophon.cookies}</p>
+      <p>{site.colophon.fonts}</p>
+      <p>
+        {site.colophon.builtOn}
+        <time class="mono" datetime={new Date().toISOString().slice(0, 10)}>
+          {builtOn}
+        </time>
+        ·
+        <LinkArrow href={SOURCE_URL} external>
+          {site.colophon.source}
+        </LinkArrow>
+      </p>
+      <p>
+        <LinkArrow href="#top" back>
+          {d.backToTop}
+        </LinkArrow>
+      </p>
+    </div>
   </footer>
 </Base>
 
 <style>
-  .bar {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: var(--s-4) var(--s-5);
-    padding: var(--s-4) var(--gutter);
-  }
-
-  .bar ul,
-  .inline {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--s-2) var(--s-4);
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .name {
-    font-family: var(--font-heading);
-    font-weight: 600;
-  }
-
-  .grid {
+  .stack,
+  .prose {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
     gap: var(--s-4);
+  }
+
+  /* Hero: copy first, chart second on phones; side by side from 48 rem */
+  .hero-grid {
+    display: grid;
+    gap: var(--s-6);
+    align-items: center;
+  }
+
+  .hero-copy {
+    display: grid;
+    gap: var(--s-5);
+  }
+
+  .tagline {
+    font-size: calc(var(--fs-body) * 1.15);
+  }
+
+  @media (min-width: 48rem) {
+    .hero-grid {
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      gap: var(--s-7);
+    }
+  }
+
+  .skripsi-title {
+    font-family: var(--font-heading);
+    font-size: var(--fs-h3);
+    line-height: var(--lh-heading);
+  }
+
+  .facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-4) var(--s-6);
+  }
+
+  .builds,
+  .principles,
+  .contact,
+  .tags {
     margin: 0;
     padding: 0;
     list-style: none;
+  }
+
+  .builds {
+    display: grid;
+    gap: var(--s-4);
+  }
+
+  @media (min-width: 40rem) {
+    .builds {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .build-name {
+    font-family: var(--font-mono);
+    font-size: var(--fs-mono);
+    font-weight: 500;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+  }
+
+  .earlier {
+    color: var(--ink-2);
+  }
+
+  .principles {
+    display: grid;
+    gap: var(--s-5) var(--s-6);
+  }
+
+  @media (min-width: 48rem) {
+    .principles {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .principles li {
+    display: grid;
+    gap: var(--s-2);
+    align-content: start;
+    padding-block-start: var(--s-3);
+    border-block-start: 2px solid var(--accent, var(--ink-2));
+  }
+
+  .principle-title {
+    font-size: var(--fs-h3);
+  }
+
+  .about {
+    display: grid;
+    gap: var(--s-6);
+    align-items: start;
+  }
+
+  .photo {
+    inline-size: 15rem;
+    max-inline-size: 100%;
+    overflow: hidden;
+    border: var(--rule) solid var(--contour);
+    border-radius: var(--radius);
+    background: var(--paper-2);
+  }
+
+  .photo :global(img) {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+  }
+
+  @media (min-width: 48rem) {
+    .about {
+      grid-template-columns: 15rem minmax(0, 1fr);
+      gap: var(--s-7);
+    }
+  }
+
+  .contact {
+    display: grid;
+    gap: var(--s-3);
   }
 
   .foot {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: var(--s-4);
-    padding: var(--s-6) var(--gutter);
+    border-block-start: var(--rule) solid var(--contour);
+    padding-block: var(--s-6);
+  }
+
+  .foot-inner {
+    display: grid;
+    gap: var(--s-3);
+    max-width: var(--content-max);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+    color: var(--ink-2);
+    font-size: var(--fs-small);
   }
 </style>

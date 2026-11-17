@@ -51,4 +51,7 @@ contact:
   # TODO(arya): F6, add `cv: { id: /cv/<file>.pdf, en: /cv/<file>.pdf }` once the CV PDFs exist.
 colophon:
   cookies: 'No cookies. One privacy-friendly page counter.'
+  fonts: 'Set in Atkinson Hyperlegible Next, Newsreader and IBM Plex Mono, self-hosted under the SIL Open Font License.'
+  builtOn: 'Built on'
+  source: 'Source code'
 ---

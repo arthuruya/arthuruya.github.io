@@ -51,4 +51,7 @@ contact:
   # TODO(arya): F6, tambahkan `cv: { id: /cv/<file>.pdf, en: /cv/<file>.pdf }` setelah PDF CV ada.
 colophon:
   cookies: 'Tanpa cookie. Satu penghitung kunjungan yang menjaga privasi.'
+  fonts: 'Ditulis dengan Atkinson Hyperlegible Next, Newsreader dan IBM Plex Mono, dihosting sendiri dengan lisensi SIL Open Font License.'
+  builtOn: 'Dibangun pada'
+  source: 'Kode sumber'
 ---

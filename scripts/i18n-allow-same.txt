@@ -2,3 +2,5 @@
 # (proper nouns, loan words). check:i18n fails on any other identical pair.
 paper.doi        # "DOI"
 caseStudy.stack  # "Stack" is used as is in Indonesian
+menu             # "Menu" is used as is in Indonesian
+hero.markerUntia # a place name
