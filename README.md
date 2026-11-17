@@ -27,6 +27,8 @@ npm run check:static   # no build needed
 | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `check:colours`  | any hex, `rgb()`, `hsl()` or named colour outside `src/styles/tokens.css`                                                                                                  |
 | `check:sanitize` | IPv4, `password`/`secret`/`token=`, private hosts, `*.bmkg.go.id` hosts not in `scripts/allowlist.txt`, ports after hostnames (scans `src/ public/ docs/`)                 |
+| `check:contrast` | a text/background pair in `src/styles/pairs.json` below its WCAG threshold (4.5 text, 3 UI) in day or night; a day colour with no night value                              |
+| `check:style`    | gradients, `backdrop-filter`, blur/drop-shadow filters, shadows heavier than a 1px rule, radius above 4px, Inter/Space Grotesk, custom cursors                             |
 | `check:html`     | wrong `lang`, not exactly one `<h1>`, `<img>` without `alt`, `href="#"`, dead internal links, missing or duplicate title/description, missing `hreflang` pair (on `dist/`) |
 | `check:urls`     | a built URL that existed on `main` and is gone; `urls.txt` out of date (`npm run urls:write` regenerates it)                                                               |
 
@@ -41,5 +43,14 @@ Also run by `check`: `astro check`, `eslint`, `prettier --check`, `vitest run`.
 5. Versions come from the registry and are pinned exactly; lockfile committed.
 6. Text is data: visible strings live in content files or the dictionary.
 7. No UI framework, icon font, CSS-in-JS, Tailwind, or remote `<script src>`.
+
+## Design system
+
+Tokens: `src/styles/tokens.css` (day on `:root`, night on `:root[data-theme='night']`).
+Components: `src/components/`. Theme bootstrap: `public/theme.js` (sync, max 400 bytes).
+
+`npm run dev`, then open `/_design/`: every component in both languages; the chart
+switch shows both themes. The page exists only under `astro dev` (injected in
+`astro.config.mjs`) and is never built. Phase 1 screenshots: `docs/design/`.
 
 Fonts: see `scripts/build-fonts.md`.
