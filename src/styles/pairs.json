@@ -1,0 +1,36 @@
+{
+  "about": "Every foreground/background token pair the site actually draws. check:contrast verifies each in day and night. min 4.5 = body and UI text (WCAG 1.4.3 AA); 3 = UI components, focus ring and graphical objects (WCAG 1.4.11). --contour is decorative only (contour lines, rules between content) and is deliberately absent: it never carries text, meaning or a control boundary.",
+  "pairs": [
+    { "fg": "--ink", "bg": "--paper", "min": 4.5, "use": "body text, headings" },
+    { "fg": "--ink", "bg": "--paper-2", "min": 4.5, "use": "text on raised surfaces (cards)" },
+    { "fg": "--ink-2", "bg": "--paper", "min": 4.5, "use": "secondary text, captions, eyebrows" },
+    { "fg": "--ink-2", "bg": "--paper-2", "min": 4.5, "use": "secondary text on cards, tags" },
+    { "fg": "--mark-red", "bg": "--paper", "min": 4.5, "use": "status text (ALARM) and its dot" },
+    { "fg": "--mark-red", "bg": "--paper-2", "min": 4.5, "use": "status text and dot on cards" },
+    { "fg": "--mark-green", "bg": "--paper", "min": 4.5, "use": "status text (OK) and its dot" },
+    {
+      "fg": "--mark-green",
+      "bg": "--paper-2",
+      "min": 4.5,
+      "use": "status text and dot on cards"
+    },
+    {
+      "fg": "--mark-yellow",
+      "bg": "--paper",
+      "min": 3,
+      "use": "focus ring, key-marker dot (never text)"
+    },
+    {
+      "fg": "--mark-yellow",
+      "bg": "--paper-2",
+      "min": 3,
+      "use": "focus ring and key-marker dot on cards"
+    },
+    {
+      "fg": "--ink-2",
+      "bg": "--paper",
+      "min": 3,
+      "use": "control boundary (ThemeToggle, Tag border)"
+    }
+  ]
+}
