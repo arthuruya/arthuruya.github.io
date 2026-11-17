@@ -57,6 +57,12 @@ export const en: Dictionary = {
     read: 'Read the case study',
     backHome: 'Back to home',
     next: 'Next case study',
+    problem: 'Problem',
+    constraints: 'Constraints',
+    decision: 'Decision',
+    result: 'Result',
+    change: 'What I would change',
+    links: 'Links',
   },
   noc: {
     heading: 'One failure, one alarm',

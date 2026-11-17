@@ -57,6 +57,12 @@ export const id: Dictionary = {
     read: 'Baca studi kasus',
     backHome: 'Kembali ke beranda',
     next: 'Studi kasus berikutnya',
+    problem: 'Masalah',
+    constraints: 'Batasan',
+    decision: 'Keputusan',
+    result: 'Hasil',
+    change: 'Yang akan saya ubah',
+    links: 'Tautan',
   },
   noc: {
     heading: 'Satu gangguan, satu alarm',
