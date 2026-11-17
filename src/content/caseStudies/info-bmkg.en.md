@@ -14,16 +14,15 @@ facts:
 sections:
   problem:
     - "Info BMKG puts BMKG's public information on a phone: forecasts down to sub-district and village level, earthquakes and tsunami warnings as they happen, radar and satellite animation, aviation and maritime weather, air quality, and early warnings of extreme weather."
-    # TODO(arya): what was wrong with, or missing from, the Ionic version that made the move to Flutter worth doing? One or two plain sentences. The page may only say what you write here.
-    - 'When I started on it in 2022, the app was built with Ionic.'
+    - 'When I started on it in 2022, the app was an older version built with Ionic, and its design and user experience felt old-fashioned.'
   constraints:
     - 'Two platforms, Android and iOS.'
     - 'Two languages, Indonesian and English, and a light and a dark theme.'
     - 'Earthquake and weather notifications go out automatically. Nobody presses a button to send them.'
     - 'Some people search by voice or listen through text-to-speech instead of reading the screen.'
   decision:
-    # TODO(arya): why Flutter, and not staying on Ionic (or another option you looked at)? The plan wants one rejected alternative with your real reason.
-    - 'I moved the app from Ionic to Flutter. The design became fresher and more modern, and the app now reaches both Android and iOS users.'
+    - 'I rebuilt the app in Flutter instead of staying on Ionic. Flutter is the framework I build in, and the team agreed to it. One codebase serves Android and iOS, and Google backs it, which lets us develop quickly.'
+    - 'The design became fresher and more modern, and the app now reaches both Android and iOS users.'
     - 'State lives in GetX, network calls go through Dio, and Hive keeps data on the phone. Firebase carries push messages, analytics, remote configuration and Firestore. Maps use flutter_map and Google Maps, charts use Syncfusion, and FVM pins the Flutter version so every build uses the same one.'
     - 'Every release is tagged and versioned. The app is at version 3.5 now.'
   result:
