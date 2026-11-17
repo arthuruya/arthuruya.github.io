@@ -1,0 +1,46 @@
+{
+  "about": "Generic dependency graph for the monitoring-noc case study (RENCANA Phase 5). No real host, address, site name or count. `dependsOn` lists the nodes a node needs in order to work. `example` is the failed node shown in the static figure.",
+  "example": ["cellular-modem"],
+  "nodes": [
+    {
+      "id": "uplink",
+      "label": { "en": "Uplink", "id": "Uplink" },
+      "dependsOn": []
+    },
+    {
+      "id": "router",
+      "label": { "en": "Router", "id": "Router" },
+      "dependsOn": ["uplink"]
+    },
+    {
+      "id": "core-switch",
+      "label": { "en": "Core switch", "id": "Switch inti" },
+      "dependsOn": ["router"]
+    },
+    {
+      "id": "access-switch",
+      "label": { "en": "Access switch", "id": "Switch akses" },
+      "dependsOn": ["core-switch"]
+    },
+    {
+      "id": "access-point",
+      "label": { "en": "Access point", "id": "Titik akses" },
+      "dependsOn": ["access-switch"]
+    },
+    {
+      "id": "cellular-modem",
+      "label": { "en": "Cellular modem", "id": "Modem seluler" },
+      "dependsOn": ["uplink"]
+    },
+    {
+      "id": "datalogger",
+      "label": { "en": "Datalogger", "id": "Datalogger" },
+      "dependsOn": ["cellular-modem"]
+    },
+    {
+      "id": "station-data",
+      "label": { "en": "Station data", "id": "Data stasiun" },
+      "dependsOn": ["datalogger"]
+    }
+  ]
+}

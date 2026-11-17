@@ -2,10 +2,17 @@ import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { parseFrontmatter } from './frontmatter.mjs';
 
+/**
+ * Folders under `src/content/` that are plain data, not language-paired collections.
+ * Their labels carry both languages inside one JSON file (src/content/diagrams/noc.json).
+ */
+const DATA_DIRS = new Set(['diagrams']);
+
 /** Read every `<name>.<lang>.md` under `contentDir/<collection>/`. */
 export function readCollections(contentDir) {
   const out = [];
   for (const collection of readdirSync(contentDir).sort()) {
+    if (DATA_DIRS.has(collection)) continue;
     const dir = join(contentDir, collection);
     if (!statSync(dir).isDirectory()) continue;
     for (const file of readdirSync(dir).sort()) {
