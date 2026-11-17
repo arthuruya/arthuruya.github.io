@@ -1,0 +1,522 @@
+---
+/**
+ * DEV-ONLY design-system page (RENCANA Phase 1).
+ *
+ * The leading underscore keeps Astro's router from building this file, so it never
+ * reaches dist/. astro.config.mjs injects it as /_design/ under `astro dev` only.
+ * Shows every Phase 1 component in English and Indonesian; the ThemeToggle switches
+ * the whole page between the day and night charts. noindex as a second guard.
+ * Strings come from the temporary stub in src/i18n/stub.ts (Phase 2 replaces it).
+ */
+import Base from '../layouts/Base.astro';
+import Card from '../components/Card.astro';
+import ContourBackdrop from '../components/ContourBackdrop.astro';
+import Figure from '../components/Figure.astro';
+import Heading from '../components/Heading.astro';
+import LangSwitch from '../components/LangSwitch.astro';
+import LinkArrow from '../components/LinkArrow.astro';
+import NavMark from '../components/NavMark.astro';
+import PaperCard from '../components/PaperCard.astro';
+import Section from '../components/Section.astro';
+import SkipLink from '../components/SkipLink.astro';
+import Stat from '../components/Stat.astro';
+import Tag from '../components/Tag.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
+import type { Accent, Lang } from '../components/types';
+import { designPage as dp, sample, ui } from '../i18n/stub';
+import { placeholderContours } from '../lib/placeholder-contours';
+import tokensCss from '../styles/tokens.css?raw';
+import pairs from '../styles/pairs.json';
+import { checkContrast } from '../../scripts/lib/contrast.mjs';
+
+const { results } = checkContrast(tokensCss, pairs);
+const contours = placeholderContours();
+const colourTokens = [
+  'paper',
+  'paper-2',
+  'ink',
+  'ink-2',
+  'contour',
+  'mark-red',
+  'mark-green',
+  'mark-yellow',
+];
+const spacing = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const panels: { lang: Lang; accent: Accent }[] = [
+  { lang: 'en', accent: 'yellow' },
+  { lang: 'id', accent: 'green' },
+];
+const ag = sample.awasGuncang;
+---
+
+<Base lang="en" title={dp.title} description={dp.description} noindex>
+  <SkipLink label={ui.en.skipLink} />
+
+  <header class="masthead" id="top">
+    <ContourBackdrop data={contours} class="masthead-backdrop" />
+    <div class="masthead-inner">
+      <div class="masthead-bar">
+        <code>/_design/</code>
+        <ThemeToggle labels={ui.en.theme} />
+      </div>
+      <h1>{dp.heading}</h1>
+      <p class="intro">{dp.intro}</p>
+    </div>
+  </header>
+
+  <main id="main">
+    <Section accent="none" labelledby="colour">
+      <Heading level={2} id="colour">
+        {dp.sections.colour}
+      </Heading>
+      <ul class="swatches">
+        {colourTokens.map((t) => (
+          <li>
+            <span class:list={['chip', `chip-${t}`]} />
+            <code>--{t}</code>
+          </li>
+        ))}
+      </ul>
+    </Section>
+
+    <Section accent="none" labelledby="contrast">
+      <Heading level={2} id="contrast">
+        {dp.sections.contrast}
+      </Heading>
+      <div class="table-wrap">
+        <table class="contrast">
+          <thead>
+            <tr>
+              <th scope="col">{dp.contrastHead.theme}</th>
+              <th scope="col">{dp.contrastHead.pair}</th>
+              <th scope="col" class="num">
+                {dp.contrastHead.ratio}
+              </th>
+              <th scope="col" class="num">
+                {dp.contrastHead.min}
+              </th>
+              <th scope="col">{dp.contrastHead.use}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {results.map((r) => (
+              <tr>
+                <td>{r.theme}</td>
+                <td>
+                  <code>
+                    {r.fg} / {r.bg}
+                  </code>
+                </td>
+                <td class="num">
+                  <NavMark
+                    kind={r.pass ? 'green' : 'red'}
+                    label={`${r.ratio.toFixed(2)} ${r.pass ? dp.verdict.pass : dp.verdict.fail}`}
+                  />
+                </td>
+                <td class="num">{r.min}</td>
+                <td>{r.use}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </Section>
+
+    <Section accent="none" labelledby="type">
+      <Heading level={2} id="type">
+        {dp.sections.type}
+      </Heading>
+      <div class="type-samples">
+        <p class="t-h1">{sample.name}</p>
+        <p class="t-h2">{dp.typeSamples.h2}</p>
+        <p class="t-h3">{dp.typeSamples.h3}</p>
+        <p>{sample.tagline.en}</p>
+        <p class="mono">{dp.typeSamples.mono}</p>
+      </div>
+    </Section>
+
+    <Section accent="none" labelledby="spacing">
+      <Heading level={2} id="spacing">
+        {dp.sections.spacing}
+      </Heading>
+      <ul class="spacing">
+        {spacing.map((n) => (
+          <li>
+            <code>--s-{n}</code>
+            <span class:list={['bar', `sp-${n}`]} />
+          </li>
+        ))}
+      </ul>
+    </Section>
+
+    {panels.map(({ lang, accent }) => {
+      const t = ui[lang];
+      const other = lang === 'en' ? 'id' : 'en';
+      return (
+        <Section id={`panel-${lang}`} lang={lang} accent={accent} labelledby={`h-${lang}`}>
+          <div class="panel-head">
+            <h2 id={`h-${lang}`}>
+              {dp.sections.components} · {dp.panel[lang]}
+            </h2>
+            <div class="controls">
+              <LangSwitch
+                href={`#panel-${other}`}
+                hreflang={t.langSwitch.hreflang}
+                label={t.langSwitch.label}
+              />
+              <ThemeToggle labels={t.theme} />
+            </div>
+          </div>
+
+          <p class="dp-label">
+            <code>Heading</code> <code>NavMark</code>
+          </p>
+          <div class="stack">
+            <Heading level={3} eyebrow={sample.work[lang].work}>
+              {sample.work[lang].otherBuilds}
+            </Heading>
+            <p>{sample.tagline[lang]}</p>
+            <NavMark as="p" kind="yellow" label={sample.next[lang]} />
+            <ul class="marks" role="list">
+              <NavMark as="li" kind="green" label={sample.status.ok} />
+              <NavMark as="li" kind="red" label={sample.status.alarm} />
+            </ul>
+          </div>
+
+          <p class="dp-label">
+            <code>PaperCard</code>
+          </p>
+          <div class="stack">
+            <p>{sample.papersLead[lang]}</p>
+            <PaperCard
+              title={ag.title}
+              titleLang={lang === 'en' ? undefined : 'en'}
+              authors={ag.authors}
+              selfIndex={ag.selfIndex}
+              venue={ag.venue}
+              year={ag.year}
+              doi={ag.doi}
+              role={ag.role[lang]}
+              labels={t.paper}
+              open={lang === 'id'}
+            />
+          </div>
+
+          <p class="dp-label">
+            <code>Card</code> <code>Stat</code> <code>Tag</code>
+          </p>
+          <Card>
+            <h3>{sample.infoBmkg.title}</h3>
+            <p class="meta">
+              {sample.infoBmkg.role[lang]} ·{' '}
+              <span class="mono">{sample.infoBmkg.period[lang]}</span>
+            </p>
+            <div class="stats">
+              {sample.stats.map((s) => (
+                <Stat value={s.value} label={s.label[lang]} source={s.source} />
+              ))}
+            </div>
+            <ul class="tags" role="list">
+              {sample.infoBmkg.stack.map((name) => (
+                <Tag as="li">{name}</Tag>
+              ))}
+            </ul>
+          </Card>
+
+          <p class="dp-label">
+            <code>Figure</code> <code>ContourBackdrop</code>
+          </p>
+          <Figure label={dp.figure.label[lang]} caption={dp.figure.caption[lang]}>
+            <div class="figure-box">
+              <ContourBackdrop data={contours} fit="slice" />
+            </div>
+          </Figure>
+
+          <p class="dp-label">
+            <code>LinkArrow</code> <code>SkipLink</code>
+          </p>
+          <div class="links">
+            <LinkArrow href={`https://doi.org/${ag.doi}`} external>
+              <span>{t.paper.doi}</span> <span class="mono">{ag.doi}</span>
+            </LinkArrow>
+            <LinkArrow href="#top" back>
+              {t.backToTop}
+            </LinkArrow>
+          </div>
+          <div class="skip-demo">
+            <SkipLink label={t.skipLink} href={`#panel-${lang}`} />
+          </div>
+
+          <p class="earlier">{sample.earlierLine[lang]}</p>
+        </Section>
+      );
+    })}
+  </main>
+</Base>
+
+<style>
+  .masthead {
+    position: relative;
+    overflow: hidden;
+    border-bottom: var(--rule) solid var(--contour);
+  }
+
+  .masthead :global(.masthead-backdrop) {
+    position: absolute;
+    inset: 0;
+  }
+
+  .masthead-inner {
+    position: relative;
+    max-width: var(--content-max);
+    margin-inline: auto;
+    padding: var(--s-5) var(--gutter) var(--s-8);
+    display: grid;
+    gap: var(--s-5);
+  }
+
+  .masthead-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--s-4);
+    color: var(--ink-2);
+  }
+
+  .masthead h1 {
+    margin-top: var(--s-7);
+  }
+
+  .intro {
+    color: var(--ink-2);
+  }
+
+  .swatches {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+    gap: var(--s-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .swatches li {
+    display: grid;
+    gap: var(--s-2);
+  }
+
+  .chip {
+    block-size: var(--s-8);
+    border: var(--rule) solid var(--ink-2);
+    border-radius: var(--radius);
+  }
+
+  .chip-paper {
+    background: var(--paper);
+  }
+  .chip-paper-2 {
+    background: var(--paper-2);
+  }
+  .chip-ink {
+    background: var(--ink);
+  }
+  .chip-ink-2 {
+    background: var(--ink-2);
+  }
+  .chip-contour {
+    background: var(--contour);
+  }
+  .chip-mark-red {
+    background: var(--mark-red);
+  }
+  .chip-mark-green {
+    background: var(--mark-green);
+  }
+  .chip-mark-yellow {
+    background: var(--mark-yellow);
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+  }
+
+  .contrast {
+    inline-size: 100%;
+    min-inline-size: 40rem; /* scroll inside .table-wrap on phones, never the page */
+    border-collapse: collapse;
+    font-size: var(--fs-small);
+  }
+
+  .contrast th,
+  .contrast td {
+    padding: var(--s-2) var(--s-3);
+    border-bottom: var(--rule) solid var(--contour);
+    text-align: start;
+    vertical-align: baseline;
+  }
+
+  .contrast th {
+    color: var(--ink-2);
+    font-weight: 400;
+  }
+
+  .contrast .num {
+    font-family: var(--font-mono);
+    text-align: end;
+    white-space: nowrap;
+  }
+
+  .type-samples {
+    display: grid;
+    gap: var(--s-4);
+  }
+
+  .t-h1,
+  .t-h2,
+  .t-h3 {
+    font-family: var(--font-heading);
+    font-optical-sizing: auto;
+    font-weight: 500;
+    line-height: var(--lh-heading);
+  }
+
+  .t-h1 {
+    font-size: var(--fs-h1);
+    line-height: var(--lh-h1);
+    letter-spacing: -0.01em;
+  }
+
+  .t-h2 {
+    font-size: var(--fs-h2);
+  }
+
+  .t-h3 {
+    font-size: var(--fs-h3);
+  }
+
+  .spacing {
+    display: grid;
+    gap: var(--s-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .spacing li {
+    display: grid;
+    grid-template-columns: 5rem 1fr;
+    align-items: center;
+  }
+
+  .bar {
+    block-size: var(--s-3);
+    background: var(--ink-2);
+  }
+
+  .sp-1 {
+    inline-size: var(--s-1);
+  }
+  .sp-2 {
+    inline-size: var(--s-2);
+  }
+  .sp-3 {
+    inline-size: var(--s-3);
+  }
+  .sp-4 {
+    inline-size: var(--s-4);
+  }
+  .sp-5 {
+    inline-size: var(--s-5);
+  }
+  .sp-6 {
+    inline-size: var(--s-6);
+  }
+  .sp-7 {
+    inline-size: var(--s-7);
+  }
+  .sp-8 {
+    inline-size: var(--s-8);
+  }
+  .sp-9 {
+    inline-size: var(--s-9);
+  }
+
+  .panel-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--s-4);
+  }
+
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-5);
+  }
+
+  .dp-label {
+    padding-top: var(--s-3);
+    border-top: var(--rule) dashed var(--contour);
+    color: var(--ink-2);
+    font-size: var(--fs-small);
+  }
+
+  .dp-label code + code {
+    margin-inline-start: var(--s-2);
+  }
+
+  .stack {
+    display: grid;
+    gap: var(--s-4);
+  }
+
+  .marks,
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2) var(--s-5);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .tags {
+    gap: var(--s-2);
+  }
+
+  .meta {
+    color: var(--ink-2);
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    gap: var(--s-5);
+  }
+
+  .figure-box {
+    aspect-ratio: 16 / 7;
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3) var(--s-6);
+  }
+
+  /* Show the skip link as it looks when focused. */
+  .skip-demo {
+    position: relative;
+    min-block-size: var(--s-8);
+  }
+
+  .skip-demo :global(.skip-link) {
+    transform: none;
+  }
+
+  .earlier {
+    color: var(--ink-2);
+  }
+</style>
