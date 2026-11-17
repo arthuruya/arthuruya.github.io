@@ -95,6 +95,67 @@ export const numberTokens = (text) =>
   (String(text).match(/\d+(?:[.,]\d+)?/g) ?? []).map((n) => n.replace(',', '.'));
 
 /**
+ * The visible prose of a case study: dek, every section paragraph and every link label.
+ * Returns [{ path, text }].
+ */
+export function proseOf(data) {
+  const out = [];
+  if (typeof data.dek === 'string') out.push({ path: 'dek', text: data.dek });
+  for (const [key, paras] of Object.entries(data.sections ?? {})) {
+    (Array.isArray(paras) ? paras : [paras]).forEach((text, i) =>
+      out.push({ path: `sections.${key}[${i}]`, text: String(text) }),
+    );
+  }
+  (data.links ?? []).forEach((l, i) => out.push({ path: `links[${i}]`, text: String(l.label) }));
+  return out;
+}
+
+/** Words in a string, counting "12M+" or "Wi-Fi" as one word. */
+export const wordCount = (text) => String(text).trim().split(/\s+/).filter(Boolean).length;
+
+/**
+ * Parse `scripts/banned-words.txt`: one word or phrase per line, `#` comments. A trailing
+ * `*` matches any ending ("leverag*" catches leverage, leveraged, leveraging).
+ */
+export function parseBannedWords(text) {
+  return text
+    .split('\n')
+    .map((l) => l.replace(/#.*/, '').trim())
+    .filter(Boolean)
+    .map((term) => {
+      const stem = term.endsWith('*');
+      const body = (stem ? term.slice(0, -1) : term)
+        .replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+        .replace(/\s+/g, '\\s+');
+      return {
+        term,
+        re: new RegExp(
+          `(?<![\\p{L}\\p{N}])${body}${stem ? '[\\p{L}-]*' : ''}(?![\\p{L}\\p{N}])`,
+          'giu',
+        ),
+      };
+    });
+}
+
+/** check:copy. Returns [{ line, term, match }] for each banned word in `text`. */
+export function findBannedWords(text, banned) {
+  const hits = [];
+  const lines = String(text).split('\n');
+  lines.forEach((line, i) => {
+    for (const { term, re } of banned) {
+      for (const m of line.matchAll(re)) hits.push({ line: i + 1, term, match: m[0] });
+    }
+  });
+  return hits;
+}
+
+/** check:copy. The words a reader sees on a case-study page, excluding stack tags and facts. */
+export function caseStudyWords(data) {
+  const parts = [data.title, data.role, data.period, ...proseOf(data).map((p) => p.text)];
+  return parts.filter((p) => typeof p === 'string').reduce((n, p) => n + wordCount(p), 0);
+}
+
+/**
  * check:facts. `sections` is the generated scripts/context-sections.json:
  * { "9": { title, numbers: [...] }, ... }. Every fact needs a real section, and every
  * number in its value must appear in that section. The two languages must carry the
@@ -126,6 +187,18 @@ export function checkFacts(caseStudies, sections) {
         }
       }
     });
+    // A number in the prose must appear in a section that one of the facts cites.
+    const cited = new Set(facts.flatMap((f) => sections[f?.source]?.numbers ?? []));
+    const citedList = [...new Set(facts.map((f) => f?.source))].join(', ');
+    for (const { path, text } of proseOf(cs.data)) {
+      for (const n of numberTokens(text)) {
+        if (!cited.has(n)) {
+          problems.push(
+            `${where} ${path}: the number ${n} is in no section the facts cite (${citedList})`,
+          );
+        }
+      }
+    }
   }
   const bySlug = new Map();
   for (const cs of caseStudies) {

@@ -1,13 +1,18 @@
 import { describe, expect, it } from 'vitest';
 import {
+  caseStudyWords,
   checkContentParity,
   checkFacts,
   compareDictionaries,
   extractContextSections,
+  findBannedWords,
   findPlaceholders,
   flatten,
   numberTokens,
   parseAllowSame,
+  parseBannedWords,
+  proseOf,
+  wordCount,
 } from '../../scripts/lib/content-checks.mjs';
 import { parseFrontmatter } from '../../scripts/lib/frontmatter.mjs';
 
@@ -126,6 +131,81 @@ describe('check:facts', () => {
       sections,
     );
     expect(p.join('\n')).toMatch(/facts sources differ/);
+  });
+});
+
+describe('check:facts on prose', () => {
+  const sections = {
+    9: { title: 'Angka', numbers: ['12', '35'] },
+    3.1: { title: 'NOC', numbers: ['7.0', '6.0'] },
+  };
+  const study = (body) => ({
+    collection: 'caseStudies',
+    file: 'a.en.md',
+    name: 'a',
+    lang: 'en',
+    data: { facts: [{ label: 'L', value: '35', source: '9' }], ...body },
+  });
+
+  it('passes prose whose numbers are in a cited section', () => {
+    expect(
+      checkFacts(
+        [study({ sections: { result: ['About 35 devices, 12M+ downloads.'] } })],
+        sections,
+      ),
+    ).toEqual([]);
+  });
+  it('fails a number in prose that no cited section has', () => {
+    const p = checkFacts([study({ sections: { decision: ['From 6.0 to 7.0 LTS.'] } })], sections);
+    expect(p.join('\n')).toMatch(/sections\.decision\[0\]: the number 6\.0 is in no section/);
+  });
+  it('checks the dek and link labels too', () => {
+    expect(checkFacts([study({ dek: 'Over 40 sites' })], sections).join('\n')).toMatch(
+      /dek: the number 40/,
+    );
+    expect(
+      checkFacts([study({ links: [{ label: 'Version 9', href: '/' }] })], sections).join('\n'),
+    ).toMatch(/links\[0\]: the number 9/);
+  });
+  it('lists the prose of a study in order', () => {
+    expect(
+      proseOf({ dek: 'd', sections: { problem: ['a', 'b'] }, links: [{ label: 'l' }] }).map(
+        (p) => p.path,
+      ),
+    ).toEqual(['dek', 'sections.problem[0]', 'sections.problem[1]', 'links[0]']);
+  });
+});
+
+describe('check:copy', () => {
+  const banned = parseBannedWords('# c\nleverag*\nrobust\ncutting-edge\nkelas dunia\n');
+
+  it('finds banned words as whole words, any case, with stems', () => {
+    const hits = findBannedWords(
+      'We Leveraged it.\nA robust,\nrobustness ok\nKelas  dunia',
+      banned,
+    );
+    expect(hits.map((h) => [h.line, h.match])).toEqual([
+      [1, 'Leveraged'],
+      [2, 'robust'],
+      [4, 'Kelas  dunia'],
+    ]);
+  });
+  it('does not match inside a longer word', () => {
+    expect(findBannedWords('unrobust cutting-edged', banned)).toEqual([]);
+  });
+  it('counts the words a reader sees on a case study', () => {
+    expect(wordCount('  one two\nthree ')).toBe(3);
+    expect(
+      caseStudyWords({
+        title: 'Info BMKG',
+        role: 'Lead',
+        period: '2022',
+        dek: 'One two.',
+        sections: { problem: ['a b c'] },
+        links: [{ label: 'x y', href: '/' }],
+        stack: ['not', 'counted'],
+      }),
+    ).toBe(11);
   });
 });
 

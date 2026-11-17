@@ -1,0 +1,48 @@
+# Words and phrases the site's copy never uses (RENCANA Phase 6, writing rules).
+# One per line, case-insensitive, whole words. A trailing * matches any ending.
+# check:copy scans src/content/**/*.md and src/i18n/*.ts.
+
+# English: marketing verbs and filler
+leverag*
+seamless*
+robust*
+cutting-edge
+cutting edge
+passionate*
+state-of-the-art
+state of the art
+world-class
+best-in-class
+next-generation
+innovative
+revolutioni*
+game-chang*
+synerg*
+empower*
+spearhead*
+utiliz*
+holistic*
+unlock*
+delve*
+supercharg*
+elevate*
+streamline*
+effortless*
+mission-critical
+rockstar
+ninja
+
+# Indonesian
+inovatif
+mutakhir
+canggih
+terdepan
+revolusioner
+sinergi*
+kelas dunia
+tanpa hambatan
+secara mulus
+penuh semangat
+berdedikasi tinggi
+memberdayakan
+solusi terbaik
