@@ -18,7 +18,7 @@ sections:
     - 'Saat saya mulai memegangnya pada 2022, aplikasi ini dibangun dengan Ionic.'
   constraints:
     - 'Dua platform, Android dan iOS.'
-    - 'Setiap layar dalam dua bahasa, Indonesia dan Inggris, dengan tema terang dan gelap.'
+    - 'Dua bahasa, Indonesia dan Inggris, dengan tema terang dan gelap.'
     - 'Notifikasi gempa dan cuaca terkirim otomatis. Tidak ada orang yang menekan tombol untuk mengirimnya.'
     - 'Sebagian pengguna mencari dengan suara atau mendengarkan lewat text-to-speech, bukan membaca layar.'
   decision:
