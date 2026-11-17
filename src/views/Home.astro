@@ -1,0 +1,272 @@
+---
+/**
+ * Phase 2 home view: every section built from the content collections, plainly.
+ * Phase 3 replaces the markup with the real layout; the data flow stays. Used by
+ * src/pages/index.astro (en) and src/pages/id/index.astro (id): two explicit route trees.
+ */
+import Base from '../layouts/Base.astro';
+import Card from '../components/Card.astro';
+import Heading from '../components/Heading.astro';
+import LangSwitch from '../components/LangSwitch.astro';
+import LinkArrow from '../components/LinkArrow.astro';
+import NavMark from '../components/NavMark.astro';
+import PaperCard from '../components/PaperCard.astro';
+import Section from '../components/Section.astro';
+import SkipLink from '../components/SkipLink.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
+import type { Lang } from '../components/types';
+import { t } from '../i18n/index.ts';
+import {
+  getBuilds,
+  getCaseStudies,
+  getPapers,
+  getPrinciples,
+  getSite,
+  getSkripsi,
+} from '../lib/content.ts';
+import { homePath, otherLang, workPath } from '../lib/routes.ts';
+
+export interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const d = t(lang);
+const other = otherLang(lang);
+const site = await getSite(lang);
+const [papers, skripsi, cases, builds, principles] = await Promise.all([
+  getPapers(lang),
+  getSkripsi(lang),
+  getCaseStudies(lang),
+  getBuilds(lang),
+  getPrinciples(lang),
+]);
+const year = (date: Date) => String(date.getUTCFullYear());
+---
+
+<Base
+  lang={lang}
+  title={site.meta.homeTitle}
+  description={site.meta.homeDescription}
+  alternates={{ en: homePath('en'), id: homePath('id') }}
+  langRedirect={lang === 'en'}
+>
+  <SkipLink label={d.skipLink} />
+
+  <header class="bar" id="top">
+    <a class="name" href={homePath(lang)}>
+      {site.name}
+    </a>
+    <nav aria-label={d.aria.mainNav}>
+      <ul>
+        <li>
+          <a href="#papers">{site.nav.papers}</a>
+        </li>
+        <li>
+          <a href="#work">{site.nav.work}</a>
+        </li>
+        <li>
+          <a href="#about">{site.nav.about}</a>
+        </li>
+        <li>
+          <a href="#contact">{site.nav.contact}</a>
+        </li>
+      </ul>
+    </nav>
+    <LangSwitch href={homePath(other)} hreflang={other} label={d.langSwitch.label} />
+    <ThemeToggle labels={d.theme} />
+  </header>
+
+  <main id="main">
+    <Section accent="yellow" labelledby="hero">
+      <Heading level={1} id="hero">
+        {site.name}
+      </Heading>
+      <p>{site.hero.tagline}</p>
+      <NavMark kind="yellow" label={site.hero.next} as="p" />
+    </Section>
+
+    <Section id="papers" labelledby="papers-h">
+      <Heading level={2} id="papers-h">
+        {site.papers.heading}
+      </Heading>
+      <p>{site.papers.lead}</p>
+      {papers.map((p) => (
+        <PaperCard
+          title={p.title}
+          titleLang="en"
+          authors={p.authors}
+          selfIndex={p.selfIndex}
+          venue={p.venue}
+          year={year(p.published)}
+          doi={p.doi}
+          role={p.role}
+          abstract={p.abstract}
+          abstractLang="en"
+          labels={d.paper}
+        />
+      ))}
+      <Heading level={3}>{site.papers.skripsiHeading}</Heading>
+      {skripsi.map((s) => (
+        <Card>
+          <p lang="id">{s.title}</p>
+          {s.summary && <p>{s.summary}</p>}
+          {s.role && <p>{s.role}</p>}
+          <p class="mono">
+            {s.author} · {d.skripsi.advisor}: {s.advisor} · {s.institution} · {s.year} · {s.pages}{' '}
+            {d.skripsi.pages}
+          </p>
+          <LinkArrow href={s.libraryUrl} external>
+            {d.skripsi.library}
+          </LinkArrow>
+        </Card>
+      ))}
+    </Section>
+
+    <Section id="work" labelledby="work-h">
+      <Heading level={2} id="work-h">
+        {site.work.heading}
+      </Heading>
+      {cases.map((c) => (
+        <Card>
+          <Heading level={3}>{c.title}</Heading>
+          <p>{c.dek}</p>
+          <p class="mono">
+            {c.role} · {c.period}
+          </p>
+          <ul class="inline">
+            {c.facts.map((f) => (
+              <li>
+                <span class="mono">{f.value}</span> <span>{f.label}</span>
+              </li>
+            ))}
+          </ul>
+          <LinkArrow href={workPath(lang, c.slug)}>{d.caseStudy.read}</LinkArrow>
+        </Card>
+      ))}
+      <Heading level={3}>{site.work.otherBuilds}</Heading>
+      <ul class="grid">
+        {builds.map((b) => (
+          <Card as="li">
+            <p>
+              <strong>{b.name}</strong>
+            </p>
+            <p>{b.blurb}</p>
+            <p class="mono">{b.stack.join(' · ')}</p>
+            {b.link && (
+              <LinkArrow href={b.link} external>
+                {b.name}
+              </LinkArrow>
+            )}
+          </Card>
+        ))}
+      </ul>
+      <p>{site.work.earlier}</p>
+    </Section>
+
+    <Section labelledby="approach-h">
+      <Heading level={2} id="approach-h">
+        {site.approach.heading}
+      </Heading>
+      <ol>
+        {principles.map((p) => (
+          <li>
+            <strong>{p.title}</strong>
+            <span>{p.body}</span>
+          </li>
+        ))}
+      </ol>
+    </Section>
+
+    <Section id="about" labelledby="about-h">
+      <Heading level={2} id="about-h">
+        {site.about.heading}
+      </Heading>
+      {site.about.paragraphs.map((p) => (
+        <p>{p}</p>
+      ))}
+    </Section>
+
+    <Section id="contact" labelledby="contact-h">
+      <Heading level={2} id="contact-h">
+        {site.contact.heading}
+      </Heading>
+      <p>{site.contact.lead}</p>
+      <ul>
+        <li>{site.contact.emailFallback}</li>
+        <li>
+          <LinkArrow href={site.contact.links.linkedin} external>
+            {site.contact.labels.linkedin}
+          </LinkArrow>
+        </li>
+        <li>
+          <LinkArrow href={site.contact.links.github} external>
+            {site.contact.labels.github}
+          </LinkArrow>
+        </li>
+        <li>
+          <LinkArrow href={site.contact.links.orcid} external>
+            {site.contact.labels.orcid}
+          </LinkArrow>
+        </li>
+        {site.contact.cv.id && (
+          <li>
+            <LinkArrow href={site.contact.cv.id}>{site.contact.labels.cvId}</LinkArrow>
+          </li>
+        )}
+        {site.contact.cv.en && (
+          <li>
+            <LinkArrow href={site.contact.cv.en}>{site.contact.labels.cvEn}</LinkArrow>
+          </li>
+        )}
+      </ul>
+    </Section>
+  </main>
+
+  <footer class="foot">
+    <p>{site.colophon.cookies}</p>
+    <a href="#top">{d.backToTop}</a>
+  </footer>
+</Base>
+
+<style>
+  .bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--s-4) var(--s-5);
+    padding: var(--s-4) var(--gutter);
+  }
+
+  .bar ul,
+  .inline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2) var(--s-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .name {
+    font-family: var(--font-heading);
+    font-weight: 600;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    gap: var(--s-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .foot {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--s-4);
+    padding: var(--s-6) var(--gutter);
+  }
+</style>

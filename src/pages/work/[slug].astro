@@ -1,0 +1,12 @@
+---
+import type { GetStaticPaths } from 'astro';
+import CaseStudy from '../../views/CaseStudy.astro';
+import { CASE_STUDY_SLUGS } from '../../lib/routes.ts';
+
+export const getStaticPaths = (() =>
+  CASE_STUDY_SLUGS.map((slug) => ({ params: { slug } }))) satisfies GetStaticPaths;
+
+const { slug } = Astro.params as { slug: (typeof CASE_STUDY_SLUGS)[number] };
+---
+
+<CaseStudy lang="en" slug={slug} />

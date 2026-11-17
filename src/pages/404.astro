@@ -1,0 +1,35 @@
+---
+/** One page, both languages inside (RENCANA Phase 2). `noindex`, so no hreflang pair. */
+import Base from '../layouts/Base.astro';
+import LinkArrow from '../components/LinkArrow.astro';
+import { t } from '../i18n/index.ts';
+import { homePath } from '../lib/routes.ts';
+
+const enText = t('en').notFound;
+const idText = t('id').notFound;
+---
+
+<Base
+  lang="en"
+  title={`${enText.title} | ${idText.title}`}
+  description={`${enText.body} ${idText.body}`}
+  noindex
+>
+  <main id="main">
+    <h1>
+      <span lang="en">{enText.title}</span> · <span lang="id">{idText.title}</span>
+    </h1>
+    <p lang="en">{enText.body}</p>
+    <p lang="id">{idText.body}</p>
+    <p>
+      <LinkArrow href={homePath('en')} lang="en" hreflang="en">
+        {enText.toHome}
+      </LinkArrow>
+    </p>
+    <p>
+      <LinkArrow href={homePath('id')} lang="id" hreflang="id">
+        {idText.toHome}
+      </LinkArrow>
+    </p>
+  </main>
+</Base>

@@ -1,0 +1,123 @@
+---
+/**
+ * Phase 2 case-study view: dek, role, period, stack and facts from the collection.
+ * Phase 6 writes the sections (problem, constraints, decision, result, change).
+ */
+import Base from '../layouts/Base.astro';
+import Heading from '../components/Heading.astro';
+import LangSwitch from '../components/LangSwitch.astro';
+import LinkArrow from '../components/LinkArrow.astro';
+import Section from '../components/Section.astro';
+import SkipLink from '../components/SkipLink.astro';
+import Stat from '../components/Stat.astro';
+import Tag from '../components/Tag.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
+import type { Lang } from '../components/types';
+import { t } from '../i18n/index.ts';
+import { getCaseStudies, getSite } from '../lib/content.ts';
+import { homePath, otherLang, workPath, type CaseStudySlug } from '../lib/routes.ts';
+
+export interface Props {
+  lang: Lang;
+  slug: CaseStudySlug;
+}
+
+const { lang, slug } = Astro.props;
+const d = t(lang);
+const other = otherLang(lang);
+const site = await getSite(lang);
+const all = await getCaseStudies(lang);
+const index = all.findIndex((c) => c.slug === slug);
+const study = all[index];
+if (!study) throw new Error(`no case study "${slug}" in "${lang}"`);
+const next = all[(index + 1) % all.length]!;
+---
+
+<Base
+  lang={lang}
+  title={`${study.title} | ${site.meta.caseStudyTitleSuffix}`}
+  description={study.dek}
+  alternates={{ en: workPath('en', slug), id: workPath('id', slug) }}
+>
+  <SkipLink label={d.skipLink} />
+
+  <header class="bar" id="top">
+    <a class="name" href={homePath(lang)}>
+      {site.name}
+    </a>
+    <LangSwitch href={workPath(other, slug)} hreflang={other} label={d.langSwitch.label} />
+    <ThemeToggle labels={d.theme} />
+  </header>
+
+  <main id="main">
+    <Section labelledby="title">
+      <Heading level={1} id="title">
+        {study.title}
+      </Heading>
+      <p>{study.dek}</p>
+      <p class="mono">
+        {d.caseStudy.role}: {study.role} · {d.caseStudy.period}: {study.period}
+      </p>
+      <ul class="tags" aria-label={d.caseStudy.stack}>
+        {study.stack.map((s) => (
+          <Tag as="li">{s}</Tag>
+        ))}
+      </ul>
+    </Section>
+
+    <Section labelledby="facts">
+      <Heading level={2} id="facts">
+        {d.caseStudy.facts}
+      </Heading>
+      <ul class="facts">
+        {study.facts.map((f) => (
+          <li>
+            <Stat value={f.value} label={f.label} source={f.source} />
+          </li>
+        ))}
+      </ul>
+    </Section>
+
+    <nav class="more">
+      <LinkArrow href={homePath(lang)} back>
+        {d.caseStudy.backHome}
+      </LinkArrow>
+      <LinkArrow href={workPath(lang, next.slug)}>
+        {d.caseStudy.next}: {next.title}
+      </LinkArrow>
+    </nav>
+  </main>
+</Base>
+
+<style>
+  .bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--s-4) var(--s-5);
+    padding: var(--s-4) var(--gutter);
+  }
+
+  .name {
+    font-family: var(--font-heading);
+    font-weight: 600;
+  }
+
+  .tags,
+  .facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2) var(--s-5);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .more {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--s-4);
+    padding: var(--s-6) var(--gutter);
+  }
+</style>
