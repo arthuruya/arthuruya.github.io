@@ -54,7 +54,9 @@ contact:
     linkedin: https://www.linkedin.com/in/arya-bratasena
     github: https://github.com/arthuruya
     orcid: https://orcid.org/0009-0006-1062-3967
-  # TODO(arya): F6, tambahkan `cv: { id: /cv/<file>.pdf, en: /cv/<file>.pdf }` setelah PDF CV ada.
+  cv:
+    id: /cv/cv-arya-bratasena-id.pdf
+    en: /cv/cv-arya-bratasena-en.pdf
 colophon:
   cookies: 'Tanpa cookie. Satu penghitung kunjungan yang menjaga privasi.'
   fonts: 'Ditulis dengan Atkinson Hyperlegible Next, Newsreader dan IBM Plex Mono, dihosting sendiri dengan lisensi SIL Open Font License.'

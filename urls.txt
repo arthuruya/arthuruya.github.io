@@ -1,5 +1,7 @@
 /
 /404.html
+/cv/cv-arya-bratasena-en.pdf
+/cv/cv-arya-bratasena-id.pdf
 /id/
 /id/work/info-bmkg/
 /id/work/monitoring-noc/

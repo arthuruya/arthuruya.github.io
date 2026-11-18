@@ -54,7 +54,9 @@ contact:
     linkedin: https://www.linkedin.com/in/arya-bratasena
     github: https://github.com/arthuruya
     orcid: https://orcid.org/0009-0006-1062-3967
-  # TODO(arya): F6, add `cv: { id: /cv/<file>.pdf, en: /cv/<file>.pdf }` once the CV PDFs exist.
+  cv:
+    id: /cv/cv-arya-bratasena-id.pdf
+    en: /cv/cv-arya-bratasena-en.pdf
 colophon:
   cookies: 'No cookies. One privacy-friendly page counter.'
   fonts: 'Set in Atkinson Hyperlegible Next, Newsreader and IBM Plex Mono, self-hosted under the SIL Open Font License.'
