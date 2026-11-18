@@ -6,7 +6,7 @@ export default defineConfig({
   testDir: 'tests/e2e',
   timeout: 30_000,
   expect: { toHaveScreenshot: { maxDiffPixelRatio: 0.002 } },
-  snapshotPathTemplate: '{testDir}/__screenshots__/{projectName}/{testFilePath}/{arg}{ext}',
+  snapshotPathTemplate: '{testDir}/__screenshots__/{projectName}/{platform}/{testFilePath}/{arg}{ext}',
   use: { baseURL: 'http://localhost:4321' },
   projects: [
     {
