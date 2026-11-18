@@ -29,16 +29,25 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "check:static": "npm run check:colours && npm run check:sanitize && npm run check:contrast && npm run check:style && npm run check:i18n && npm run check:facts && npm run check:copy && npm run check:placeholders && npm run check:snapshot && npm run check:astro && npm run lint && npm run format:check && npm run test",
-    "check": "npm run check:static && npm run build && npm run check:html && npm run check:urls",
-    "check:copy": "node scripts/check-copy.mjs"
+    "check:static": "npm run check:colours && npm run check:sanitize && npm run check:contrast && npm run check:style && npm run check:i18n && npm run check:facts && npm run check:copy && npm run check:placeholders && npm run check:snapshot && npm run check:brand && npm run check:astro && npm run lint && npm run format:check && npm run test",
+    "check": "npm run check:static && npm run build && npm run check:html && npm run check:urls && npm run check:csp && npm run check:seo && npm run check:budget && npm run test:e2e && npm run lighthouse",
+    "check:copy": "node scripts/check-copy.mjs",
+    "check:budget": "node scripts/check-budget.mjs",
+    "lighthouse": "lhci autorun",
+    "check:csp": "node scripts/check-csp.mjs",
+    "check:seo": "node scripts/check-seo.mjs",
+    "check:brand": "node scripts/build-brand.mjs --check",
+    "check:release": "node scripts/check-release.mjs",
+    "brand": "node scripts/build-brand.mjs"
   },
   "dependencies": {
     "astro": "7.4.12"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.12",
+    "@axe-core/playwright": "4.14.0",
     "@eslint/js": "10.0.1",
+    "@lhci/cli": "0.16.1",
     "@playwright/test": "1.61.0",
     "eslint": "10.15.0",
     "eslint-plugin-astro": "3.2.1",

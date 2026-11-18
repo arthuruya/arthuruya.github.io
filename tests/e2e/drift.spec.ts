@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './fixtures';
 
 // Counts every requestAnimationFrame call from the first script on the page.
 const countRaf = () => {

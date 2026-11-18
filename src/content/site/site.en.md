@@ -5,6 +5,12 @@ meta:
   homeTitle: 'Arya Bratasena Alhaq: engineer, BMKG Makassar'
   homeDescription: 'Arya Bratasena Alhaq, engineer at the BMKG Maritime Meteorological Station in Makassar. Papers, case studies, and the next step: HF-radar drift research.'
   caseStudyTitleSuffix: Case study
+  shareAlt: 'Arya Bratasena Alhaq, engineer at BMKG Makassar, beside a chart of the Makassar Strait with two marked places.'
+  shareLine: 'Engineer, BMKG Maritime Meteorological Station, Makassar'
+person:
+  jobTitle: Engineer
+  worksFor: 'Badan Meteorologi, Klimatologi, dan Geofisika (BMKG)'
+  alumniOf: 'Sekolah Tinggi Meteorologi Klimatologi dan Geofisika (STMKG)'
 nav:
   papers: Papers
   work: Work
@@ -54,4 +60,8 @@ colophon:
   fonts: 'Set in Atkinson Hyperlegible Next, Newsreader and IBM Plex Mono, self-hosted under the SIL Open Font License.'
   builtOn: 'Built on'
   source: 'Source code'
+  data: 'Hero data: BMKG InaCAWO Flows, an archived run starting {date}.'
+  map: 'Base map: Natural Earth, public domain.'
+  fontLicences: 'Font licences'
+  headers: 'GitHub Pages does not let this site set the frame-ancestors, X-Frame-Options and HSTS headers, so they are not set. The content security policy is set in each page instead.'
 ---

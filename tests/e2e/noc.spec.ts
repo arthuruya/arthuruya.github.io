@@ -1,4 +1,5 @@
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './fixtures';
 
 const EN = '/work/monitoring-noc/';
 const ID = '/id/work/monitoring-noc/';
@@ -71,8 +72,18 @@ test.describe('with JavaScript', () => {
     while ((await focused(page)) !== 'uplink' && guard++ < 60) await page.keyboard.press('Tab');
     expect(await focused(page)).toBe('uplink');
     const seen = ['uplink'];
-    for (let i = 0; i < 9; i++) {
+    // macOS WebKit skips native buttons and checkboxes with Tab (system setting "Press Tab to
+    // highlight each item" is off); only the tabindex nodes are tabbable there. The switch and
+    // reset are focused directly in that engine.
+    const webkit = test.info().project.name.startsWith('webkit');
+    for (let i = 0; i < (webkit ? 7 : 9); i++) {
       await page.keyboard.press('Tab');
+      seen.push(await focused(page));
+    }
+    if (webkit) {
+      await page.locator('[data-naive]').focus();
+      seen.push(await focused(page));
+      await page.locator('[data-reset]').focus();
       seen.push(await focused(page));
     }
     expect(seen).toEqual([...ORDER, 'switch', 'reset']);

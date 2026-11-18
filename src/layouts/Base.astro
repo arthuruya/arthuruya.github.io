@@ -1,10 +1,14 @@
 ---
 /**
  * Document shell: <html lang>, meta, hreflang, theme bootstrap and the global
- * stylesheets. Every string comes from the caller (RENCANA rule 9). Phase 3/8 extend
- * the head (theme-color, CSP); keep it free of inline scripts and styles.
+ * stylesheets. Every string comes from the caller (RENCANA rule 9). Phase 8 added the
+ * CSP, theme-color, icons, share tags and GoatCounter. Keep it free of inline scripts and
+ * styles: the CSP forbids both (`check:csp`).
  */
+import Analytics from '../components/Analytics.astro';
+import { CSP } from '../config/csp.ts';
 import { SITE_URL } from '../config/site.ts';
+import { readTokens } from '../lib/tokens.ts';
 import '../styles/fonts.css';
 import '../styles/tokens.css';
 import '../styles/base.css';
@@ -16,19 +20,40 @@ export interface Props {
   noindex?: boolean;
   /** root-relative paths of this page in each language; renders canonical and hreflang */
   alternates?: { en: string; id: string };
+  /** alt text of the share image; omit on pages that are not shared (404) */
+  shareAlt?: string;
   /** home page `/` only: load public/lang.js, which picks the first language */
   langRedirect?: boolean;
 }
 
-const { lang, title, description, noindex = false, alternates, langRedirect = false } = Astro.props;
+const {
+  lang,
+  title,
+  description,
+  noindex = false,
+  alternates,
+  shareAlt,
+  langRedirect = false,
+} = Astro.props;
 const abs = (path: string) => new URL(path, SITE_URL).href;
+// <meta name="theme-color"> needs literals; they come from tokens.css, not from here.
+const themeColour = { day: readTokens('day').paper, night: readTokens('night').paper };
+const share = shareAlt ? abs(`/share/share-${lang}.png`) : undefined;
+const locale = { en: 'en_GB', id: 'id_ID' } as const;
 ---
 
 <!doctype html>
 <html lang={lang}>
   <head>
     <meta charset="utf-8" />
+    <!-- First after charset: a meta policy only governs what follows it. -->
+    <meta http-equiv="Content-Security-Policy" content={CSP} />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content={themeColour.day} media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content={themeColour.night} media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <!-- Sets data-theme before first paint: external, synchronous, no defer/async. -->
     <script is:inline src="/theme.js"></script>
     {langRedirect && <script is:inline src="/lang.js"></script>}
@@ -43,9 +68,30 @@ const abs = (path: string) => new URL(path, SITE_URL).href;
         <link rel="alternate" hreflang="x-default" href={abs(alternates.en)} />
       </>
     )}
+    {share && alternates && (
+      <>
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={abs(alternates[lang])} />
+        <meta property="og:locale" content={locale[lang]} />
+        <meta property="og:locale:alternate" content={locale[lang === 'en' ? 'id' : 'en']} />
+        <meta property="og:image" content={share} />
+        <meta property="og:image:type" content="image/png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content={shareAlt} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={share} />
+        <meta name="twitter:image:alt" content={shareAlt} />
+      </>
+    )}
     <!-- Remembers a manual language switch. External, deferred, runs on every page. -->
     <script is:inline src="/lang-switch.js" defer></script>
     <slot name="head" />
+    <Analytics />
   </head>
   <body>
     <slot />

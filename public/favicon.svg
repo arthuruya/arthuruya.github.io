@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+<style>.bg{fill:#e6dfcb}.wave{fill:none;stroke:#3a4a63;stroke-width:1.5;stroke-linecap:round}.buoy{fill:#9e7a00;stroke:#142033;stroke-width:2.5}@media (prefers-color-scheme:dark){.bg{fill:#101c2e}.wave{fill:none;stroke:#b9b6a8;stroke-width:1.5;stroke-linecap:round}.buoy{fill:#e3c25a;stroke:#e9e2cf;stroke-width:2.5}}</style>
+<rect class="bg" width="32" height="32" rx="4"/>
+<path class="wave" d="M3 22q6.5-4 13 0t13 0"/>
+<path class="wave" d="M3 27.5q6.5-4 13 0t13 0"/>
+<circle class="buoy" cx="16" cy="12.5" r="6.5"/>
+</svg>
