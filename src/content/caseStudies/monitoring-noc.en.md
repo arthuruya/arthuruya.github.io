@@ -18,7 +18,7 @@ sections:
     - 'The observation equipment (Aloptama) adds automatic weather stations, a maritime weather station and a weather display at the port. Alerts by email did not help much, because the technicians rarely read their email.'
   constraints:
     - 'A paid product was out.'
-    - 'The maritime weather station feeds an Elasticsearch index run by a central unit, and its vendor path had to stay untouched.'
+    - 'The maritime weather station reports to a central unit through a vendor path, which had to stay untouched.'
     - 'The port display sits on a cellular link that can drop.'
     - 'The monitoring server can fail too, and a dead server cannot report its own death.'
   decision:

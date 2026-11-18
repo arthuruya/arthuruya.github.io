@@ -4,17 +4,18 @@ slug: info-bmkg
 order: 1
 title: Info BMKG
 dek: 'Aplikasi seluler resmi BMKG untuk informasi cuaca, gempa dan peringatan dini, di Android dan iOS.'
-role: Lead developer (Flutter)
+role: Mobile & Web Developer (Flutter)
 period: 2022–sekarang
 stack: [Flutter, Dart, GetX, Dio, Hive, Firebase, flutter_map, Syncfusion Charts, FVM]
 facts:
   - { label: Unduhan, value: 12M+, source: '2.1' }
   - { label: Platform, value: Android dan iOS, source: '2.1' }
   - { label: Bahasa, value: Indonesia dan Inggris, source: '2.1' }
+  - { label: Versi saat ini, value: '3.5', source: '2.1' }
 sections:
   problem:
     - 'Info BMKG membawa informasi publik BMKG ke ponsel: prakiraan cuaca sampai tingkat kecamatan dan kelurahan, gempa dan peringatan tsunami saat itu juga, animasi radar dan satelit, cuaca penerbangan dan maritim, kualitas udara, serta peringatan dini cuaca ekstrem.'
-    - 'Saat saya mulai memegangnya pada 2022, aplikasi ini masih versi lama berbasis Ionic, dengan tampilan dan pengalaman pengguna yang terasa kuno.'
+    - 'Saat saya mulai menanganinya pada 2022, aplikasi ini masih versi lama berbasis Ionic, dengan tampilan dan pengalaman pengguna yang terasa kuno.'
   constraints:
     - 'Dua platform, Android dan iOS.'
     - 'Dua bahasa, Indonesia dan Inggris, dengan tema terang dan gelap.'
