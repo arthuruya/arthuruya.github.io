@@ -15,10 +15,10 @@ facts:
 sections:
   problem:
     - 'Stasiun punya beberapa switch, belasan access point, router, server dan peralatan observasi yang tersebar di banyak lokasi. Tidak ada satu layar pun yang menunjukkan apakah semuanya berjalan.'
-    - 'Peralatan observasi (Aloptama) menambah AWS, MAWS dan layar informasi cuaca di pelabuhan. Peringatan lewat email juga kurang membantu, karena teknisi jarang membuka email.'
+    - 'Peralatan observasi (Aloptama) menambah Automatic Weather Station (AWS), Maritime AWS (MAWS) dan layar informasi cuaca di pelabuhan. Peringatan lewat email juga kurang membantu, karena teknisi jarang membuka email.'
   constraints:
     - 'Produk berbayar tidak bisa dipakai.'
-    - 'MAWS mengisi indeks Elasticsearch milik unit pusat, dan jalur vendornya tidak boleh diganggu.'
+    - 'MAWS melapor ke unit pusat lewat jalur vendor, dan jalur itu tidak boleh diganggu.'
     - 'Layar di pelabuhan memakai koneksi seluler yang bisa putus.'
     - 'Server monitoring juga bisa mati, dan server yang mati tidak bisa melaporkan dirinya sendiri.'
   decision:
