@@ -9,6 +9,7 @@ import { Picture } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Card from '../components/Card.astro';
 import Heading from '../components/Heading.astro';
+import JsonLd from '../components/JsonLd.astro';
 import HeroChart from '../components/HeroChart.astro';
 import LinkArrow from '../components/LinkArrow.astro';
 import NavMark from '../components/NavMark.astro';
@@ -30,7 +31,9 @@ import {
   getSite,
   getSkripsi,
 } from '../lib/content.ts';
+import { articleLd, personLd } from '../lib/jsonld.ts';
 import { homePath, otherLang, workPath } from '../lib/routes.ts';
+import snapshot from '../../public/data/snapshot.json';
 
 export interface Props {
   lang: Lang;
@@ -52,6 +55,19 @@ const builtOn = new Intl.DateTimeFormat(lang === 'id' ? 'id-ID' : 'en-GB', {
   dateStyle: 'long',
   timeZone: 'UTC',
 }).format(new Date());
+// Colophon credits (ADR 0001): the hero data is credited here, not on the hero.
+const snapshotDate = new Intl.DateTimeFormat(lang === 'id' ? 'id-ID' : 'en-GB', {
+  dateStyle: 'long',
+  timeZone: 'UTC',
+}).format(new Date(snapshot.t0));
+const personData = personLd({
+  lang,
+  homePath: homePath(lang),
+  name: site.name,
+  ...site.person,
+  sameAs: [site.contact.links.linkedin, site.contact.links.github, site.contact.links.orcid],
+});
+const paper = papers[0];
 const cvLinks = [
   { href: site.contact.cv.id, label: site.contact.labels.cvId, lang: 'id' },
   { href: site.contact.cv.en, label: site.contact.labels.cvEn, lang: 'en' },
@@ -63,9 +79,12 @@ const cvLinks = [
   title={site.meta.homeTitle}
   description={site.meta.homeDescription}
   alternates={{ en: homePath('en'), id: homePath('id') }}
+  shareAlt={site.meta.shareAlt}
   langRedirect={lang === 'en'}
 >
   <Fragment slot="head">
+    <JsonLd data={personData} />
+    {paper && <JsonLd data={articleLd(paper)} />}
     <script is:inline src="/contact.js" defer></script>
   </Fragment>
 
@@ -284,13 +303,24 @@ const cvLinks = [
   <footer class="foot">
     <div class="foot-inner">
       <p>{site.colophon.cookies}</p>
+      <p>{site.colophon.data.replace('{date}', snapshotDate)}</p>
+      <p>{site.colophon.map}</p>
       <p>{site.colophon.fonts}</p>
       <p>
-        {site.colophon.builtOn}
+        {site.colophon.fontLicences}:{' '}
+        <LinkArrow href="/fonts/LICENSES/Atkinson-Hyperlegible-Next-OFL.txt">Atkinson</LinkArrow>
+        {' · '}
+        <LinkArrow href="/fonts/LICENSES/Newsreader-OFL.txt">Newsreader</LinkArrow>
+        {' · '}
+        <LinkArrow href="/fonts/LICENSES/IBM-Plex-Mono-OFL.txt">IBM Plex Mono</LinkArrow>
+      </p>
+      <p>{site.colophon.headers}</p>
+      <p>
+        {site.colophon.builtOn}{' '}
         <time class="mono" datetime={new Date().toISOString().slice(0, 10)}>
           {builtOn}
         </time>
-        ·
+        {' · '}
         <LinkArrow href={SOURCE_URL} external>
           {site.colophon.source}
         </LinkArrow>

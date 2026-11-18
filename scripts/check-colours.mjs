@@ -5,7 +5,12 @@ import { findColourViolations } from './lib/colours.mjs';
 import { walk } from './lib/walk.mjs';
 
 const root = resolve(import.meta.dirname, '..');
-const EXEMPT = new Set([resolve(root, 'src/styles/tokens.css')]);
+// public/favicon.svg is generated from tokens.css by scripts/build-brand.mjs; an SVG favicon
+// cannot read CSS variables from the page. `check:brand` fails when it drifts from the tokens.
+const EXEMPT = new Set([
+  resolve(root, 'src/styles/tokens.css'),
+  resolve(root, 'public/favicon.svg'),
+]);
 const SCANNED = new Set(['.css', '.astro', '.ts', '.js', '.mjs', '.svg', '.html']);
 
 let failures = 0;

@@ -54,6 +54,7 @@ const prose = ORDER.flatMap(({ key, accent }) => {
   title={`${study.title} | ${site.meta.caseStudyTitleSuffix}`}
   description={study.dek}
   alternates={{ en: workPath('en', slug), id: workPath('id', slug) }}
+  shareAlt={site.meta.shareAlt}
 >
   <SkipLink label={d.skipLink} />
 

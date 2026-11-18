@@ -161,6 +161,16 @@ const site = defineCollection({
       homeDescription: z.string().min(1),
       /** page title suffix for case studies, e.g. "Case study" */
       caseStudyTitleSuffix: z.string().min(1),
+      /** alt text of the share image (Phase 8) */
+      shareAlt: z.string().min(1),
+      /** the one line under the name on the share image (Phase 8) */
+      shareLine: z.string().min(1),
+    }),
+    /** Person JSON-LD facts (Phase 8). Only what CONTEXT states. */
+    person: z.object({
+      jobTitle: z.string().min(1),
+      worksFor: z.string().min(1),
+      alumniOf: z.string().min(1),
     }),
     nav: z.object({
       papers: z.string(),
@@ -213,6 +223,14 @@ const site = defineCollection({
       builtOn: z.string(),
       /** link text for the source repository */
       source: z.string(),
+      /** credit for the hero data; `{date}` is the Snapshot t0 date (ADR 0001) */
+      data: z.string(),
+      /** credit for the base map */
+      map: z.string(),
+      /** label before the three font licence links */
+      fontLicences: z.string(),
+      /** what GitHub Pages does not let the site set */
+      headers: z.string(),
     }),
   }),
 });

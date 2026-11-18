@@ -1,0 +1,14 @@
+---
+/**
+ * GoatCounter (RENCANA Phase 8, item 5), the only analytics. Cookieless; the colophon says so.
+ * Snippet and attributes as in https://www.goatcounter.com/help/start (read 2026-11-18); the
+ * docs show a protocol-relative `//gc.zgo.at/count.js`, written here as https to match the
+ * CSP. Left out when the site code is empty and in `astro dev`, so development never counts.
+ */
+import { GOATCOUNTER_CODE } from '../config/site.ts';
+
+const enabled = import.meta.env.PROD && GOATCOUNTER_CODE !== '';
+const endpoint = `https://${GOATCOUNTER_CODE}.goatcounter.com/count`;
+---
+
+{enabled && <script is:inline async data-goatcounter={endpoint} src="https://gc.zgo.at/count.js" />}

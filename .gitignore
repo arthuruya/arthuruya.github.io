@@ -35,3 +35,6 @@ snapshot.raw*
 # Playwright output
 test-results/
 playwright-report/
+.lighthouseci/
+playwright-report/
+test-results/
