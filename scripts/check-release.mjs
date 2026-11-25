@@ -6,7 +6,7 @@
 //   - structure, hreflang pairs    (check:html)
 //   - URLs permanent and unique    (check:urls)
 //   - CSP and SEO/share on dist/   (check:csp, check:seo), icons current (check:brand)
-//   - the portrait and both CV PDFs exist and are linked from the built home pages
+//   - both CV PDFs exist and are linked from the built home pages
 import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -36,10 +36,6 @@ const need = (ok, message) => {
   if (!ok) findings.push(message);
 };
 
-need(
-  existsSync(resolve(root, 'src/assets/portrait.png')),
-  'portrait present (src/assets/portrait.png)',
-);
 for (const lang of ['en', 'id']) {
   const cv = frontmatter(lang).contact?.cv ?? {};
   for (const which of ['id', 'en']) {

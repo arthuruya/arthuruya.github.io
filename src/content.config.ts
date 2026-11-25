@@ -195,7 +195,6 @@ const site = defineCollection({
     about: z.object({
       heading: z.string(),
       paragraphs: z.array(z.string()).min(1),
-      photoAlt: z.string(),
     }),
     contact: z.object({
       heading: z.string(),

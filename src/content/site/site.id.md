@@ -35,7 +35,6 @@ about:
   paragraphs:
     - 'Sejak kuliah (2017) saya suka programming dan hardware. Ketika mulai bekerja di Jakarta pada 2022, saya mengembangkan Info BMKG, aplikasi resmi BMKG yang sebelumnya memakai Ionic, menjadi Flutter. Tampilannya jadi lebih segar dan modern, dan aplikasi menjangkau pengguna Android dan iOS.'
     - 'Pada September 2026 saya pindah karier menjadi engineer di Stasiun Meteorologi Maritim BMKG Makassar. Di lapangan, pekerjaan saya berpindah ke jaringan, alat observasi, dan kabel yang harus tetap menyala. Kebiasaan software saya bawa ke sana: mencatat setiap gangguan, mencari akar masalahnya, membangun sistem monitoring, dan menulis dokumentasi agar rekan bisa bekerja tanpa saya.'
-  photoAlt: Potret Arya Bratasena Alhaq, berkemeja putih
 contact:
   heading: Kontak
   lead: 'Hubungi saya untuk riset, kolaborasi, atau program studi lanjut.'

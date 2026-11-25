@@ -5,7 +5,6 @@
  * Used by src/pages/index.astro (en) and src/pages/id/index.astro (id): two explicit
  * route trees.
  */
-import { Picture } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Card from '../components/Card.astro';
 import Heading from '../components/Heading.astro';
@@ -20,7 +19,6 @@ import SkipLink from '../components/SkipLink.astro';
 import Stat from '../components/Stat.astro';
 import Tag from '../components/Tag.astro';
 import type { Lang } from '../components/types';
-import portrait from '../assets/portrait.png';
 import { SOURCE_URL } from '../config/site.ts';
 import { t } from '../i18n/index.ts';
 import {
@@ -235,26 +233,10 @@ const cvLinks = [
       <Heading level={2} id="about-h">
         {site.about.heading}
       </Heading>
-      <div class="about">
-        <div class="photo">
-          <Picture
-            src={portrait}
-            alt={site.about.photoAlt}
-            formats={['avif', 'webp']}
-            fallbackFormat="png"
-            widths={[240, 360]}
-            sizes="240px"
-            width={240}
-            height={338}
-            decoding="async"
-            loading="lazy"
-          />
-        </div>
-        <div class="prose">
-          {site.about.paragraphs.map((p) => (
-            <p>{p}</p>
-          ))}
-        </div>
+      <div class="prose">
+        {site.about.paragraphs.map((p) => (
+          <p>{p}</p>
+        ))}
       </div>
     </Section>
 
@@ -433,34 +415,6 @@ const cvLinks = [
 
   .principle-title {
     font-size: var(--fs-h3);
-  }
-
-  .about {
-    display: grid;
-    gap: var(--s-6);
-    align-items: start;
-  }
-
-  .photo {
-    inline-size: 15rem;
-    max-inline-size: 100%;
-    overflow: hidden;
-    border: var(--rule) solid var(--contour);
-    border-radius: var(--radius);
-    background: var(--paper-2);
-  }
-
-  .photo :global(img) {
-    display: block;
-    inline-size: 100%;
-    block-size: auto;
-  }
-
-  @media (min-width: 48rem) {
-    .about {
-      grid-template-columns: 15rem minmax(0, 1fr);
-      gap: var(--s-7);
-    }
   }
 
   .contact {
